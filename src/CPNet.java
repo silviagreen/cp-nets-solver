@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class CPNet {
 	
-	private Map<Integer, List<Integer>> adjList;
+	private Map<Integer, List<Vertex>> adjList;
 	private int nVertex;
 	private int nEdges;
 
@@ -20,9 +20,9 @@ public class CPNet {
 		}
 		this.nVertex = nVertex;
 		this.nEdges = nEdges;
-		this.adjList = new HashMap<Integer, List<Integer>>(this.nVertex);
+		this.adjList = new HashMap<Integer, List<Vertex>>(this.nVertex);
 		for(int i = 0; i < this.nVertex; i++) {
-			adjList.put(new Integer(i), new ArrayList<Integer>());
+			adjList.put(new Integer(i), new ArrayList<Vertex>());
 		}
 		generateRandomCPNet();
 	}
@@ -38,7 +38,7 @@ public class CPNet {
              */
             //System.out.println(startVertex + "->" + endVertex);
             if(!startVertex.equals(endVertex) && !this.adjList.get(startVertex).contains(endVertex)) {
-            	this.adjList.get(startVertex).add(endVertex);
+            	this.adjList.get(startVertex).add(new Vertex(endVertex));
             	edgesCounter++;
             }
             /*
@@ -48,7 +48,7 @@ public class CPNet {
         
 	}
 	
-	public Map<Integer, List<Integer>> getCPNet() {
+	public Map<Integer, List<Vertex>> getCPNet() {
 		return adjList;
 	}
 	
