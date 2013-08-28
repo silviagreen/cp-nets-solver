@@ -1,13 +1,10 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-
 
 public class CPNet {
 	
-	private Map<Integer, List<Vertex>> adjList;
+	private List<Vertex> adjList;
 	private int nVertex;
 	private int nEdges;
 
@@ -20,9 +17,9 @@ public class CPNet {
 		}
 		this.nVertex = nVertex;
 		this.nEdges = nEdges;
-		this.adjList = new HashMap<Integer, List<Vertex>>(this.nVertex);
+		this.adjList = new ArrayList<Vertex>(this.nVertex);
 		for(int i = 0; i < this.nVertex; i++) {
-			adjList.put(new Integer(i), new ArrayList<Vertex>());
+			adjList.add(new Vertex(i));
 		}
 		generateRandomCPNet();
 	}
@@ -36,26 +33,44 @@ public class CPNet {
             /*
              * Se i due nodi sono diversi e l'arco non esiste già, allora lo inserisco
              */
-            //System.out.println(startVertex + "->" + endVertex);
-            if(!startVertex.equals(endVertex) && !this.adjList.get(startVertex).contains(endVertex)) {
-            	this.adjList.get(startVertex).add(new Vertex(endVertex));
+            if(!startVertex.equals(endVertex) && !this.adjList.get(startVertex).isParentOf(endVertex)) {
+            	//System.out.println(startVertex + "->" + endVertex);
+            	this.adjList.get(startVertex).addChild(endVertex);
+            	this.adjList.get(endVertex).addParent(startVertex);
             	edgesCounter++;
             }
             /*
              * Altrimenti non faccio nulla, aspetto la prossima iterazione
              */
         }
-        
+        generatePreferences();
 	}
 	
-	public Map<Integer, List<Vertex>> getCPNet() {
-		return adjList;
+	private void generatePreferences() {
+		for (Vertex v : this.adjList) {
+			//System.out.println("Vertice: " + v.getID());
+			v.generatePreferences();
+		}
+	}
+
+	public List<Vertex> getCPNet() {
+		return this.adjList;
+	}
+	
+	/*
+	 * toString di test, si può modificare
+	 */
+	public String toString() {
+		String s = "------------------------------------------\n";
+		for(Vertex v : this.adjList) {
+			s += v + "------------------------------------------\n";
+		}
+		return s;
 	}
 	
 	public static void main(String[] args) {
-		CPNet c = new CPNet(3, 2);
-		System.out.println(c.getCPNet());
+		CPNet c = new CPNet(10, 3);
+		System.out.println(c);
 	}
-	
 	
 }
