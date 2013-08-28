@@ -48,8 +48,6 @@ public class CPNet {
         
 	}
 	
-	/* prova commit */
-	
 	public Map<Integer, List<Integer>> getCPNet() {
 		return adjList;
 	}
