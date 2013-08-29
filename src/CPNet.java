@@ -60,6 +60,7 @@ public class CPNet {
 	/*
 	 * toString di test, si può modificare
 	 */
+        @Override
 	public String toString() {
 		String s = "------------------------------------------\n";
 		for(Vertex v : this.adjList) {
@@ -69,7 +70,9 @@ public class CPNet {
 	}
 	
 	public static void main(String[] args) {
-		CPNet c = new CPNet(10, 3);
+		CPNet c = new CPNet(10, 10);
+                ViewGraph view=new ViewGraph(c);
+                view.setVisible(true);
 		System.out.println(c);
 	}
 	

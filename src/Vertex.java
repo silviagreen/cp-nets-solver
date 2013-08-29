@@ -28,6 +28,10 @@ public class Vertex {
 	public List<Integer> getChildren() {
 		return this.children;
 	}
+        
+        public List<Preference> getPreferences() {
+            return this.preferences;
+        }
 	
 	public void addParent(Integer parentID) {
 		this.parents.add(parentID);
@@ -83,6 +87,7 @@ public class Vertex {
 	/*
 	 * toString di test, si può modificare
 	 */
+        @Override
 	public String toString() {
 		String s = "";
 		s += "Vertex " + this.vertexID + ":\n";
