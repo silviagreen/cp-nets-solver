@@ -95,10 +95,14 @@ public class BacktrackingStrategy extends SolutionStrategy {
 				System.out.println("var: " + var.getName() + " = " + value.toString());
 				assignment.setAssignment(var, value);
 				if (assignment.isConsistent(csp.getConstraints(var))) {
-                    csp = inference(var, assignment, csp);
-					if (csp != null) { // null denotes failure
+					//csp = inference(var, assignment, csp);
+					DomainRestoreInfo info = inference(var, assignment, csp);
+					//if(csp !=null)
+					if (!info.isEmptyDomainFound()) 
+					{ // null denotes failure
                         result.addAll(recursiveBackTrackingSearch(csp, assignment,findAll));
 					}
+					csp.restoreDomains(info);
 				}
 				assignment.removeAssignment(var);
 			}
@@ -140,10 +144,25 @@ public class BacktrackingStrategy extends SolutionStrategy {
 	 * 
 	 * @return A reduced copy of the original CSP or null denoting failure
 	 *         (assignment cannot be extended to a solution).
-	 */
+	 
 	protected CSP inference(Variable var, Assignment assignment, CSP csp) {
 		CSP newcsp = csp.copyForPropagation();
 		newcsp.removeValueFromDomain(var, assignment.getAssignment(var));
 		return newcsp;
-	}
+	}*/
+	
+	/**
+     * Primitive operation, which tries to prune out values from the CSP which
+     * are not possible anymore when extending the given assignment to a
+     * solution. This default implementation just leaves the original CSP as it
+     * is.
+     * 
+     * @return An object which provides informations about (1) whether changes
+     *         have been performed, (2) possibly inferred empty domains , and
+     *         (3) how to restore the domains.
+     */
+    protected DomainRestoreInfo inference(Variable var, Assignment assignment,
+                    CSP csp) {
+            return new DomainRestoreInfo().compactify();
+    }
 }

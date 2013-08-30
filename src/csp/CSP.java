@@ -66,6 +66,14 @@ public class CSP {
 		domains[varIndexHash.get(var)] = new Domain(values);
 	}
 	
+	public void restoreDomains(DomainRestoreInfo info) {
+        for (Pair<Variable, Domain> pair : info.getSavedDomains()){
+        		List<Object> list = new ArrayList<Object>();	
+                setDomain(pair.getFirst(), pair.getSecond().fromDomainToList());
+        }
+}
+
+	
 	public void removeValueFromDomain(Variable var, Object value) {
 		Domain currDomain = getDomain(var);
 		List<Object> values = new ArrayList<Object>(currDomain.size());
@@ -91,6 +99,23 @@ public class CSP {
 		for (Variable var : constraint.getScope())
 			cnet.get(var).add(constraint);
 	}
+	
+	/**
+     * Returns for binary constraints the other variable from the scope.
+     * 
+     * @return a variable or null for non-binary constraints.
+     */
+    public Variable getNeighbor(Variable var, Constraint constraint) {
+            List<Variable> scope = constraint.getScope();
+            if (scope.size() == 2) {
+                    if (var == scope.get(0))
+                            return scope.get(1);
+                    else if (var == scope.get(1))
+                            return scope.get(0);
+            }
+            return null;
+    }
+
 	
 	public CSP copyForPropagation() {
 		CSP result = new CSP();

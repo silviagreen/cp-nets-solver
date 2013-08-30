@@ -32,6 +32,10 @@ public class Domain implements Iterable<Object> {
 		return values.length;
 	}
 	
+	public List<Object> fromDomainToList(){
+		return Arrays.asList(values);
+	}
+	
 	public void removeFirst(){
 		Object[] newvals = new Object[values.length-1];
 		
