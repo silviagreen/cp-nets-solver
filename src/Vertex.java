@@ -10,6 +10,9 @@ public class Vertex {
 	private List<Integer> children;
 	private List<Preference> preferences;
 	
+	List<Preference> affirmed = new ArrayList<Preference>();
+	List<Preference> notAffirmed = new ArrayList<Preference>();
+	
 	public Vertex(Integer vertexID) {
 		this.vertexID = vertexID;
 		this.parents = new ArrayList<Integer>();
@@ -97,6 +100,15 @@ public class Vertex {
 			 */
 			boolean isAV = (Integer.valueOf(randomizer.nextInt(2)) == 0);
 			this.preferences.get(0).setIsAffirmedVariable(isAV);
+		}
+	}
+	
+	public void setAffirmedLists(){
+		for(Preference p : preferences){
+			if(p.getIsAffirmedValue()) 
+				affirmed.add(p);
+			else
+				notAffirmed.add(p);
 		}
 	}
 	

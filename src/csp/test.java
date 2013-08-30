@@ -103,7 +103,7 @@ public class test extends CSP{
     	
 		ImprovedBacktrackingStrategy resolution = new ImprovedBacktrackingStrategy();
 		
-		resolution.setInference(Inference.FORWARD_CHECKING);
+		resolution.setInference(Inference.AC3);
 		List<Assignment> result = resolution.solve(t, true);
 		for(Assignment a : result)
 		 System.out.println("SOL=" + a);

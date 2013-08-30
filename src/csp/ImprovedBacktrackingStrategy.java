@@ -34,7 +34,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 	 * Starts with a constraint propagation if AC-3 is enabled and then calls
 	 * the super class implementation.
 	 */
-	public List<Assignment> solve(CSP csp) {
+	public List<Assignment> solve(CSP csp, boolean findAll) {
 		if (inferenceStrategy == Inference.AC3) {
 			DomainRestoreInfo info = new AC3Strategy().reduceDomains(csp);
 			if (!info.isEmpty()) {
@@ -43,7 +43,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 					return null;
 			}
 		}
-		return super.solve(csp, true);
+		return super.solve(csp, findAll);
 	}
 
 	/**

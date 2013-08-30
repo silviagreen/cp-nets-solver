@@ -23,5 +23,10 @@ public class ListUtils {
 	       list.addAll(newList);
 	    }
 
-
+public static Variable getVariable(List<Variable> list, String name){
+	for(Variable v : list){
+		if(v.getName().equals(name)) return v;
+	}
+	return null;
+}
 	}

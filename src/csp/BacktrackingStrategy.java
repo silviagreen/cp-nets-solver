@@ -79,12 +79,16 @@ public class BacktrackingStrategy extends SolutionStrategy {
 	 */
 	Variable lastAssignedVar = null;
 	private List<Assignment> recursiveBackTrackingSearch(CSP csp, Assignment assignment, boolean findAll) {
+		System.out.println("findAll = " + findAll);
 		boolean isComplete = assignment.isComplete(csp.getVariables());
 		if (isComplete) {
 			
 			result.add(assignment.copy());
+			
 			assignment.removeAssignment(lastAssignedVar);
-			return result;
+
+			 return result;
+			
 		} 
 			
 		System.out.println(assignment);
@@ -101,6 +105,9 @@ public class BacktrackingStrategy extends SolutionStrategy {
 					if (!info.isEmptyDomainFound()) 
 					{ // null denotes failure
                         result.addAll(recursiveBackTrackingSearch(csp, assignment,findAll));
+                        if(!findAll){
+                        	if(result != null) break;
+                        }
 					}
 					csp.restoreDomains(info);
 				}
