@@ -12,8 +12,16 @@ public class ViewPreferences extends JPanel{
         _model=model;
         this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         List<Vertex> vert=_model.getCPNet();
+        Label l;
+        if (_model.isCyclic()){
+            l=new Label("Grafo cicliclo");
+        }
+        else{
+            l=new Label("Grafo aciclico");
+        }
+        this.add(l);
         for(Vertex v: vert){
-            Label l=new Label(v.getID().toString()+": ");
+            l=new Label(v.getID().toString()+": ");
             l.setFont(new Font("Arial",Font.BOLD,12));
             this.add(l);
             List<Preference> prefs=v.getPreferences();

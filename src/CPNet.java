@@ -117,15 +117,9 @@ public class CPNet {
         }
 	
 	public static void main(String[] args) {
-		CPNet c = new CPNet(5, 4);
+		CPNet c = new CPNet(30, 60);
                 ViewGraph view=new ViewGraph(c);
                 view.setVisible(true);
-                if(c.isCyclic()){
-                    System.out.println("grafo ciclico");
-                }
-                else{
-                    System.out.println("grafo aciclico");
-                }
 	}
 	
 }
