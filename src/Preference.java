@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class Preference {
 	
 	private int variableName;
@@ -21,6 +19,12 @@ public class Preference {
 		this.binaryValue = binaryValue;
 		this.isAffirmedVariable = null;
 	}
+        
+        public Preference(Preference origin){
+            this.variableName=origin.variableName;
+            this.binaryValue=origin.binaryValue;
+            this.isAffirmedVariable=new Boolean(origin.isAffirmedVariable);
+        }
 	
 	public boolean setIsAffirmedVariable(boolean isAV) {
 		//System.out.println("--------Stato attuale di " + Integer.toBinaryString(this.binaryValue) + "b : " + this.isAffirmedVariable);
@@ -35,6 +39,7 @@ public class Preference {
 	/*
 	 * toString di test, si può modificare
 	 */
+        @Override
 	public String toString() {
 		return "\n" + Integer.toBinaryString(this.binaryValue) + " -> " + (this.isAffirmedVariable ? 
 				this.variableName + " > !" + this.variableName  : 

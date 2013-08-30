@@ -17,6 +17,22 @@ public class Vertex {
 		this.preferences = new ArrayList<Preference>();
 	}
 	
+        public Vertex(Vertex origin){
+            this.vertexID=new Integer(origin.vertexID);
+            this.parents = new ArrayList<>();
+            for(Integer i : origin.parents){
+                this.parents.add(new Integer(i));
+            }
+            this.children = new ArrayList<>();
+            for(Integer i : origin.children){
+                this.children.add(new Integer(i));
+            }
+            this.preferences = new ArrayList<>();
+            for(Preference p : origin.preferences){
+                this.preferences.add(new Preference(p));
+            }
+        }
+        
 	public Integer getID() {
 		return this.vertexID;
 	}
