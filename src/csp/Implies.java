@@ -33,7 +33,7 @@ public class Implies implements Constraint {
 		if (Hassignment.hasAssignmentFor(thesis)) {
 			Object ass = Hassignment.getAssignment(thesis);
 			Object Hass = assignments.get(0).getAssignment(thesis);
-			if (ass.equals(Hass)) {
+			if (ass.equals(Hass) && hypothesis.isEmpty() == false) {
 				// controllo ipotesi
 				boolean satisfied = true;;
 				for (Assignment a : assignments.subList(1, assignments.size())) {
@@ -51,7 +51,8 @@ public class Implies implements Constraint {
 				System.out.println(satisfied);
 				if(satisfied) return true;
 				else return false;
-			} else
+			} else if(ass.equals(Hass) && hypothesis.isEmpty()  == true) return true;
+			else if(!ass.equals(Hass) && hypothesis.isEmpty() == true) return false;
 				return true; // altrimenti vado avanti
 		}
 		return true;
