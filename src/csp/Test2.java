@@ -88,13 +88,16 @@ public class Test2 extends CSP{
 	
 	public static void main(String[] args) {
 		ImprovedBacktrackingStrategy s = new ImprovedBacktrackingStrategy();
-		s.setInference(Inference.FORWARD_CHECKING);
+		s.setInference(Inference.AC3);
 		
 		Test2 t = new Test2();
-		List<Assignment> res = s.solve(t, true);
-	
-		for(Assignment a : res)
-			System.out.println("SOL=" + a);
+//		List<Assignment> res = s.solve(t, true);
+//	
+//		for(Assignment a : res)
+//			System.out.println("SOL=" + a);
+		
+		for(Constraint i : t.getConstraints())
+			System.out.println(i);
 	}
 
 }

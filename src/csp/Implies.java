@@ -58,17 +58,22 @@ public class Implies implements Constraint {
 
 	}
 
-	/*public String toString() {
+	public String toString() {
 		Object ass = null;
 		String ris = "";
-		for (Variable v : hypothesis) {
-			ass = assignments.getAssignment(v);
+		for(Assignment a : assignments.subList(1, assignments.size())){
+			ris += "<";
+			for (Variable v : hypothesis) {
+			ass = a.getAssignment(v);
 			ris += v.getName() + " = " + ass.toString() + ", ";
 		}
-		ass = assignments.getAssignment(thesis);
-		ris += " => " + thesis.getName() + " = " + ass.toString();
+			ris += ">";
+		}
+		
+		ass = assignments.get(0).getAssignment(thesis);
+		ris += " => " + thesis.getName() + " = " + ass;
 		return ris;
 
 	}
-*/
+
 }

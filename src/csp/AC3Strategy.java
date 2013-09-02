@@ -43,6 +43,7 @@ import java.util.List;
 public class AC3Strategy {
 
 	public DomainRestoreInfo reduceDomains(Variable var, Object value, CSP csp) {
+		System.out.println("riduco dominio");
 		DomainRestoreInfo result = new DomainRestoreInfo();
 		Domain domain = csp.getDomain(var);
 		List<Object> valueList = new ArrayList<>();
@@ -92,6 +93,7 @@ public class AC3Strategy {
 
 	private boolean revise(Variable xi, Variable xj, Constraint constraint,
 			CSP csp, DomainRestoreInfo info) {
+		System.out.println("in revise");
 		boolean revised = false;
 		Assignment assignment = new Assignment();
 		for (Object vValue : csp.getDomain(xi)) {

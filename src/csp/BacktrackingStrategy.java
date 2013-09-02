@@ -79,10 +79,10 @@ public class BacktrackingStrategy extends SolutionStrategy {
 	 */
 	Variable lastAssignedVar = null;
 	private List<Assignment> recursiveBackTrackingSearch(CSP csp, Assignment assignment, boolean findAll) {
-		System.out.println("findAll = " + findAll);
+		//System.out.println("findAll = " + findAll);
 		boolean isComplete = assignment.isComplete(csp.getVariables());
 		if (isComplete) {
-			
+			System.out.println("trovata sol = " + assignment);
 			result.add(assignment.copy());
 			
 			assignment.removeAssignment(lastAssignedVar);
@@ -91,12 +91,12 @@ public class BacktrackingStrategy extends SolutionStrategy {
 			
 		} 
 			
-		System.out.println(assignment);
+		//System.out.println(assignment);
 			Variable var = selectUnassignedVariable(csp, assignment);
 			lastAssignedVar = var;
 			
 			for (Object value : orderDomainValues(var, assignment, csp)) {
-				System.out.println("var: " + var.getName() + " = " + value.toString());
+				//System.out.println("var: " + var.getName() + " = " + value.toString());
 				assignment.setAssignment(var, value);
 				if (assignment.isConsistent(csp.getConstraints(var))) {
 					//csp = inference(var, assignment, csp);

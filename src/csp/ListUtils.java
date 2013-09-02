@@ -29,4 +29,33 @@ public static Variable getVariable(List<Variable> list, String name){
 	}
 	return null;
 }
+
+public static int[] getBinArray(int number) {
+    int length = 0;
+    while (number != 0) {
+        number >>>= 1;
+        length++;
+    }
+    return new int[length];
+}
+
+public static List<Integer> decToBin(int number) {
+    int[] array = getBinArray(number);
+    int k = array.length-1;
+    while (number != 0)
+    {
+        array[k--] = number & 1;
+        number >>>= 1;
+    }
+    return fromArrayToIntList(array);
+}
+
+public static List<Integer> fromArrayToIntList(int[] ints){
+List<Integer> intList = new ArrayList<Integer>();
+for (int index = 0; index < ints.length; index++)
+{
+    intList.add(ints[index]);
+}return intList;
+}
+
 	}

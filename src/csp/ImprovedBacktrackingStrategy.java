@@ -36,6 +36,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 	 */
 	public List<Assignment> solve(CSP csp, boolean findAll) {
 		if (inferenceStrategy == Inference.AC3) {
+			System.out.println("AC3 selected");
 			DomainRestoreInfo info = new AC3Strategy().reduceDomains(csp);
 			if (!info.isEmpty()) {
 				fireStateChanged(csp);
