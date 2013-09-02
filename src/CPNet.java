@@ -221,7 +221,7 @@ public class CPNet {
 	public static void main(String[] args) {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
-		CPNet c = new CPNet(6, 3);
+		CPNet c = new CPNet(30, 15);
 
 		List<Variable> variables = new ArrayList<Variable>();
 		for (Vertex v : c.getAdjList()) {
@@ -261,9 +261,10 @@ public class CPNet {
 				Assignment thesis1 = new Assignment();
 				List<Variable> hp1 = new ArrayList<Variable>();
 
+				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
 				thesis1.setAssignment(var, 1);
-				pos.add(thesis1);
-
+				pos.add(thesis1);}
+				
 				// char[] binaryValue = new char[v.getParents().size()];
 
 				if (!v.getParents().isEmpty()) {
@@ -333,8 +334,9 @@ public class CPNet {
 								+ " var d'ipotesi");
 					}
 				}
+				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
 				Implies i = new Implies(var, hp1, pos);
-				constraints.add(i);
+				constraints.add(i);}
 
 				// lista negativi
 				System.out.println("NEGATIVI");
@@ -342,8 +344,9 @@ public class CPNet {
 				Assignment thesis0 = new Assignment();
 				List<Variable> hp0 = new ArrayList<Variable>();
 
+				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
 				thesis0.setAssignment(var, 0);
-				neg.add(thesis0);
+				neg.add(thesis0);}
 
 				// char[] binaryValue0 = new char[v.getParents().size()];//
 				// aggiungere
@@ -395,14 +398,16 @@ public class CPNet {
 
 					}
 				}
+				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
 				Implies i0 = new Implies(var, hp0, neg);
-				constraints.add(i0);
+				constraints.add(i0);}
 
 			}
 
 			CpNetCSP csp = new CpNetCSP(variables, constraints);
 			System.out.println("provo a risolvere");
-			List<Assignment> result = csp.solve(Inference.AC3, csp, true);
+			List<Assignment> result = csp.solve(Inference.NONE, csp, true);
+			if(result.isEmpty()) System.out.println("NESSUNA SOLUZIONE  OTTIMA");
 			for (Assignment a : result)
 				System.out.println("SOL=" + a);
 
