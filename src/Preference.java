@@ -1,3 +1,7 @@
+import java.util.List;
+
+import csp.ListUtils;
+
 public class Preference {
 	
 	private int variableName;
@@ -42,6 +46,22 @@ public class Preference {
 			return true;
 		}
 		return false;
+	}
+	
+	public List<Integer> getBinaryValueInList(int nParents){
+		List<Integer> binVal = ListUtils.decToBin(getBinaryValue());
+		int diff = (nParents) - (binVal.size());
+		// System.out.println("bin val " + binVal.toString()+
+		// " has length " + binVal.size());
+		// System.out.println("diff = " + diff);
+		while (diff != 0) {
+			binVal.add(0, 0);
+			diff--;
+		}
+		// System.out.println(v.getID() + " ha binary value " +
+		// binVal.toString() + " e ha " + v.getParents().size() +
+		// " parents");
+		return binVal;
 	}
 	
 	/*
