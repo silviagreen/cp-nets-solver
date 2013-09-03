@@ -15,6 +15,7 @@ import csp.Implies;
 import csp.ListUtils;
 import csp.ImprovedBacktrackingStrategy.Inference;
 import csp.Variable;
+import java.util.Collections;
 
 public class CPNet {
 
@@ -23,6 +24,7 @@ public class CPNet {
 	private int nEdges;
 
 	List<Vertex> indepList = new ArrayList<Vertex>();
+        private int MAX_ITERATION_LS=10000;
 
 	public CPNet(int nVertex, int nEdges) throws IllegalArgumentException {
 		/*
@@ -148,7 +150,7 @@ public class CPNet {
 		setIndepList();
 		for (Vertex v : indepList) {
 			Variable var = ListUtils.getVariable(vars, v.getID().toString());
-			// v è una variabile indipendente
+			// v ï¿½ una variabile indipendente
 			// v ha una sola preferenza
 			Preference p = v.getPreferences().get(0);
 
@@ -273,7 +275,7 @@ public class CPNet {
 		for (Vertex v : getAdjList()) {
 
 			// System.out.println("vertice: " + v.getID());
-			// la var che sto considerando è la tesi del vincolo.
+			// la var che sto considerando ï¿½ la tesi del vincolo.
 			// con isAffirmedValue la tesi vale 1, altrimenti vale 0
 			// le ipotesi sono il binary value
 
@@ -392,10 +394,76 @@ public class CPNet {
 		return result;
 	}
 
+        private Instance generateRandomAssignment(){
+            Instance ass=new Instance();
+            for(int i=0;i<this.adjList.size();i++){
+                Random randomizer = new Random(System.nanoTime());
+                Boolean b=randomizer.nextBoolean();
+                ass.add(b);
+            }
+            return ass;
+        }
+        
+        private Instance nextNeighbor(Instance currentass){
+            ArrayList<Integer> randomarray=new ArrayList<>();
+            for(int i=0;i<this.adjList.size();i++){
+                randomarray.add(i);
+            }
+            long seed=System.nanoTime();
+            Collections.shuffle(randomarray, new Random(seed));
+            boolean betterfound=false;
+            int i=0;
+            while(!betterfound && i<randomarray.size()){
+                int posdifferent=randomarray.remove(randomarray.size()-1);
+                Vertex v=this.adjList.get(posdifferent);
+                List<Integer> parents=v.getParents();
+                int indexrow=0;
+                for(int j=0;j<parents.size();j++){
+                    if(currentass.get(parents.get(j))){
+                        indexrow+=(int) Math.pow(2,parents.size()-j-1);
+                    }
+                }
+                if(v.getPreferences().get(indexrow).getIsAffirmedValue()!=currentass.get(posdifferent)){
+                    currentass.set(posdifferent, !currentass.get(posdifferent));
+                    betterfound=true;
+                }
+                i++;
+            }
+            if(betterfound){
+                return currentass;
+            }
+            else{
+                return null;
+            }
+        }
+        
+        public Instance solveWithLocalSearch(){
+            Instance solution=generateRandomAssignment();
+            boolean bestfound=false;
+            int i=0;
+            while(!bestfound && i<MAX_ITERATION_LS){
+                Instance next=nextNeighbor(solution);
+                if(next==null){
+                    bestfound=true;
+                }
+                else{
+                    solution=next;
+                }
+                i++;
+            }
+            if(bestfound){
+                System.out.println("SOLUZIONE OTTIMA TROVATA "+i);
+            }
+            else{
+                System.out.println("SOLUZIONE NON OTTIMA TROVATA"+i);
+            }
+            return solution;
+        }
+        
 	public static void main(String[] args) {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
-		CPNet c = new CPNet(30, 15);
+		CPNet c = new CPNet(4, 8);
 
 		List<Assignment> list = c.getOptimalSolution(Inference.NONE, true);
 
@@ -406,6 +474,9 @@ public class CPNet {
 
 		ViewGraph view = new ViewGraph(c);
 		view.setVisible(true);
+                
+                Instance solution=c.solveWithLocalSearch();
+                System.out.println(solution.toString());
 	}
 
 }
