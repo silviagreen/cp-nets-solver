@@ -464,7 +464,7 @@ public class CPNet {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
 		CPNet c = new CPNet(4, 8);
-
+		CPNet cc = new CPNet(c);
 		List<Assignment> list = c.getOptimalSolution(Inference.NONE, true);
 
 		if (list.isEmpty())
@@ -472,11 +472,14 @@ public class CPNet {
 		for (Assignment a : list)
 			System.out.println("SOL=" + a);
 
-		ViewGraph view = new ViewGraph(c);
-		view.setVisible(true);
+		
                 
-                Instance solution=c.solveWithLocalSearch();
+                Instance solution=cc.solveWithLocalSearch();
                 System.out.println(solution.toString());
+                
+                ViewGraph view = new ViewGraph(c, list);
+        		view.setVisible(true);     
+                
 	}
 
 }

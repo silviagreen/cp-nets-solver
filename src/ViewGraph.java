@@ -5,18 +5,22 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
+
+import csp.Assignment;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class ViewGraph extends JFrame {
 
     private CPNet _model = null;
 
-    public ViewGraph(CPNet cpnet) {
+    public ViewGraph(CPNet cpnet, List<Assignment> solutions1) {
         super("View CPNet");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	this.setSize(500, 500);
@@ -27,8 +31,22 @@ public class ViewGraph extends JFrame {
         getContentPane().add(BorderLayout.CENTER,graphComponent);
         ViewPreferences pref=new ViewPreferences(_model);
         JScrollPane scroll=new JScrollPane(pref);
+        
+       
+        
+        String textSol1 = "";
+        for(Assignment a : solutions1){
+        	textSol1 += a.toString();
+        	textSol1 += "\n";
+        }
+        JTextArea ta = new JTextArea("SOLUZIONI OTTIME\n" + textSol1);
+        ta.setEditable(false);
+        JScrollPane scroll2=new JScrollPane(ta);
+        
         scroll.setPreferredSize(new Dimension(150,100));
+        scroll2.setPreferredSize(new Dimension(150,100));
         getContentPane().add(BorderLayout.EAST,scroll);
+        getContentPane().add(BorderLayout.SOUTH,scroll2);
         Object parent = graph.getDefaultParent();
 
         graph.getModel().beginUpdate();
