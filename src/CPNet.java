@@ -29,8 +29,7 @@ public class CPNet {
 		 * Il numero totale di archi può essere al massimo N * (N-1)
 		 */
 		if (nEdges > nVertex * (nVertex - 1)) {
-			throw new IllegalArgumentException(
-					"Il numero di archi non è appropriato rispetto al numero di vertici inseriti.");
+			throw new IllegalArgumentException("Il numero di archi non è appropriato rispetto al numero di vertici inseriti.");
 		}
 		this.nVertex = nVertex;
 		this.nEdges = nEdges;
@@ -65,16 +64,13 @@ public class CPNet {
 		int edgesCounter = 0;
 		Random randomizer = new Random(System.nanoTime());
 		while (edgesCounter < this.nEdges) {
-			Integer startVertex = Integer.valueOf(randomizer
-					.nextInt(this.nVertex));
-			Integer endVertex = Integer.valueOf(randomizer
-					.nextInt(this.nVertex));
+			Integer startVertex = Integer.valueOf(randomizer.nextInt(this.nVertex));
+			Integer endVertex = Integer.valueOf(randomizer.nextInt(this.nVertex));
 			/*
 			 * Se i due nodi sono diversi e l'arco non esiste già, allora lo
 			 * inserisco
 			 */
-			if (!startVertex.equals(endVertex)
-					&& !this.adjList.get(startVertex).isParentOf(endVertex)) {
+			if (!startVertex.equals(endVertex) && !this.adjList.get(startVertex).isParentOf(endVertex)) {
 				// System.out.println(startVertex + "->" + endVertex);
 				this.adjList.get(startVertex).addChild(endVertex);
 				this.adjList.get(endVertex).addParent(startVertex);
@@ -124,12 +120,9 @@ public class CPNet {
 				Integer m = n.getChildren().remove(n.getChildren().size() - 1);
 				Integer i = new Integer(0);
 				boolean trovato = false;
-				while (!trovato
-						&& i < workingcopy.adjList.get(m).getParents().size()) {
-					if (workingcopy.adjList.get(m).getParents().get(i)
-							.intValue() == n.getID().intValue()) {
-						workingcopy.adjList.get(m).getParents()
-								.remove(i.intValue());
+				while (!trovato && i < workingcopy.adjList.get(m).getParents().size()) {
+					if (workingcopy.adjList.get(m).getParents().get(i).intValue() == n.getID().intValue()) {
+						workingcopy.adjList.get(m).getParents().remove(i.intValue());
 						trovato = true;
 					}
 					i++;
@@ -142,8 +135,7 @@ public class CPNet {
 		boolean existedge = false;
 		Integer i = new Integer(0);
 		while (!existedge && i < workingcopy.adjList.size()) {
-			if (workingcopy.adjList.get(i).getChildren().size() > 0
-					|| workingcopy.adjList.get(i).getParents().size() > 0) {
+			if (workingcopy.adjList.get(i).getChildren().size() > 0 || workingcopy.adjList.get(i).getParents().size() > 0) {
 				existedge = true;
 			}
 			i++;
@@ -172,7 +164,7 @@ public class CPNet {
 		List<Vertex> nonInped = ListUtils.subtract(adjList, indepList);
 		int index = 0;
 		while (!nonInped.isEmpty()) {
-			
+
 			boolean notAssigned = false;
 			Vertex v = nonInped.get(index);
 			// System.out.println("Considero vertice " + v.getID().toString() +
@@ -195,7 +187,7 @@ public class CPNet {
 					binaryValue += result.getAssignment(temp).toString();
 				}
 			}
-			
+
 			if (notAssigned)
 				continue;
 			int binToChoose = ListUtils.fromBinToInt(binaryValue);
@@ -218,8 +210,8 @@ public class CPNet {
 
 		return result;
 	}
-	
-	private List<Variable> generateVariables(){
+
+	private List<Variable> generateVariables() {
 		List<Variable> variables = new ArrayList<Variable>();
 		for (Vertex v : getAdjList()) {
 			Variable var = new Variable(Integer.toString(v.getID()));
@@ -227,155 +219,107 @@ public class CPNet {
 		}
 		return variables;
 	}
-	
-	public CpNetCSP generateCSP(){
+
+	public CpNetCSP generateCSP() {
 		List<Implies> constraints = new ArrayList<Implies>();
 		List<Variable> variables = generateVariables();
 
-		//System.out.println(variables);
-		// for(Vertex v : c.getAdjList()){
-		// String ris = v.getID() + " ha parens ";
-		// for(Integer p : v.getParents()){
-		// ris += String.valueOf(p);
-		// }
-		// System.out.println(ris);
-		// }
-
 		for (Vertex v : getAdjList()) {
 
-			System.out.println("vertice: " + v.getID());
+			// System.out.println("vertice: " + v.getID());
 			// la var che sto considerando � la tesi del vincolo.
-			// con isAffirmedValue la tesi vale 1, altrimento vale 0
+			// con isAffirmedValue la tesi vale 1, altrimenti vale 0
 			// le ipotesi sono il binary value
 
 			v.setAffirmedLists();
-			// System.out.println("fatte liste");
 
-			Variable var = ListUtils.getVariable(variables,
-					String.valueOf(v.getID()));
+			Variable var = ListUtils.getVariable(variables, String.valueOf(v.getID()));
 
 			// lista positivi
-			System.out.println("POSITIVI");
+			// System.out.println("POSITIVI");
 			List<Assignment> pos = new ArrayList<Assignment>();
 			Assignment thesis1 = new Assignment();
 			List<Variable> hp1 = new ArrayList<Variable>();
 
-			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
-			thesis1.setAssignment(var, 1);
-			pos.add(thesis1);}
-			
-			// char[] binaryValue = new char[v.getParents().size()];
+			if (!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue())) {
+				thesis1.setAssignment(var, 1);
+				pos.add(thesis1);
+			}
 
 			if (!v.getParents().isEmpty()) {
 				for (Preference p : v.affirmed) {
 
-					// int[] binVal =
-					// ListUtils.decToBin(p.getBinaryValue());
-					List<Integer> binVal = ListUtils.decToBin(p
-							.getBinaryValue());
-
-					// String bv = Integer.toString(p.getBinaryValue());
+					List<Integer> binVal = ListUtils.decToBin(p.getBinaryValue());
 					Assignment a = new Assignment();
-					// int diff = (v.getParents().size()) - (bv.length());
-					int diff = (v.getParents().size()) - (binVal.size());
-					System.out.println("bin val " + binVal.toString()
-							+ " has length " + binVal.size()
-							+ " con parents " + v.getParents().size());
-					System.out.println("diff = " + diff);
-					// List<Integer> binvalList =
-					// ListUtils.fromArrayToIntList(binVal);
-					while (diff != 0) {
-						// bv = (new StringBuffer(bv)).insert(0,
-						// "0").toString();
 
+					int diff = (v.getParents().size()) - (binVal.size());
+					// System.out.println("bin val " + binVal.toString()+
+					// " has length " + binVal.size()+ " con parents " +
+					// v.getParents().size());
+					// System.out.println("diff = " + diff);
+					while (diff != 0) {
 						binVal.add(0, 0);
-						System.out.println("binval list = "
-								+ binVal.toString());
+						// System.out.println("binval list = " +
+						// binVal.toString());
 						diff--;
-						// if(diff == 0) {
-						// for(int ii = 0; ii < binvalList.size(); ii++){
-						// int intero =(int) binvalList.get(ii);
-						// binVal[ii] = intero;
-						// }
-						// }
 					}
-					System.out.println(v.getID() + " ha binary value "
-							+ binVal.toString() + " e ha "
-							+ v.getParents().size() + " parents");
-					// binaryValue = bv.toCharArray();
+					// System.out.println(v.getID() + " ha binary value "+
+					// binVal.toString() + " e ha "+ v.getParents().size() +
+					// " parents");
 					int i = 0;
 
-					// Integer pref = new Integer(binVal.get(i));
-					// Integer pref = new Integer(
-					// Character.getNumericValue(binaryValue[i]));
-					// System.out.println("BIN VAL " + binaryValue +
-					// " has length " + binaryValue.length);
-					// while (i != binaryValue.length) {
 					while (i != binVal.size()) {
-						Variable varHp = ListUtils.getVariable(variables,
-								String.valueOf(v.getParents().get(i)));
-						// pref = new
-						// Integer(Character.getNumericValue(binaryValue[i]));
+						Variable varHp = ListUtils.getVariable(variables, String.valueOf(v.getParents().get(i)));
 						Integer pref = new Integer((binVal.get(i)));
-						System.out
-								.println("preferenza: " + varHp.toString()
-										+ ", " + pref.toString());
+						// System.out.println("preferenza: " + varHp.toString()+
+						// ", " + pref.toString());
 						a.setAssignment(varHp, pref);
 						if (!hp1.contains(varHp)) {
 							hp1.add(varHp);
 						}
 						i++;
 						// variabili in hp1
-					}// Character.getNumericValue(binaryValue[i])
+					}
 					pos.add(a);
 
-					System.out.println("nell'ipotesi ci sono " + hp1.size()
-							+ " var d'ipotesi");
+					System.out.println("nell'ipotesi ci sono " + hp1.size() + " var d'ipotesi");
 				}
 			}
-			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
-			Implies i = new Implies(var, hp1, pos);
-			constraints.add(i);}
+			if (!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue())) {
+				Implies i = new Implies(var, hp1, pos);
+				constraints.add(i);
+			}
 
 			// lista negativi
-			System.out.println("NEGATIVI");
+			// System.out.println("NEGATIVI");
 			List<Assignment> neg = new ArrayList<Assignment>();
 			Assignment thesis0 = new Assignment();
 			List<Variable> hp0 = new ArrayList<Variable>();
 
-			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
-			thesis0.setAssignment(var, 0);
-			neg.add(thesis0);}
-
-			// char[] binaryValue0 = new char[v.getParents().size()];//
+			if (!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue())) {
+				thesis0.setAssignment(var, 0);
+				neg.add(thesis0);
+			}
 
 			if (!v.getParents().isEmpty()) {
 				for (Preference p : v.notAffirmed) {
-					// System.out.println("preferenze negative");
-					// String bv = Integer.toString(p.getBinaryValue());
-					List<Integer> binVal = ListUtils.decToBin(p
-							.getBinaryValue());
+					List<Integer> binVal = ListUtils.decToBin(p.getBinaryValue());
 					Assignment a = new Assignment();
 
 					int diff = (v.getParents().size()) - (binVal.size());
-					System.out.println("bin val " + binVal.toString()
-							+ " has length " + binVal.size());
-					System.out.println("diff = " + diff);
+					// System.out.println("bin val " + binVal.toString()+
+					// " has length " + binVal.size());
+					// System.out.println("diff = " + diff);
 					while (diff != 0) {
-						// bv = (new StringBuffer(bv)).insert(0,
-						// "0").toString();
 						binVal.add(0, 0);
 						diff--;
 					}
-					// binaryValue0 = bv.toCharArray();
-					System.out.println(v.getID() + " ha binary value "
-							+ binVal.toString() + " e ha "
-							+ v.getParents().size() + " parents");
+					// System.out.println(v.getID() + " ha binary value " +
+					// binVal.toString() + " e ha " + v.getParents().size() +
+					// " parents");
 
 					int i0 = 0;
 
-					// Integer pref = new
-					// Integer(Character.getNumericValue(binaryValue0[i0]));
 					while (i0 != binVal.size()) {
 						Variable varHp = ListUtils.getVariable(variables, String.valueOf(v.getParents().get(i0)));
 						Integer pref = new Integer((binVal.get(i0)));
@@ -385,27 +329,27 @@ public class CPNet {
 						}
 						i0++;
 						// var in hp0
-					}// Character.getNumericValue(binaryValue[i])
+					}
 					neg.add(a);
 
 				}
 			}
-			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
-			Implies i0 = new Implies(var, hp0, neg);
-			constraints.add(i0);}
+			if (!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue())) {
+				Implies i0 = new Implies(var, hp0, neg);
+				constraints.add(i0);
+			}
 
 		}
-		
+
 		CpNetCSP csp = new CpNetCSP(variables, constraints);
 		return csp;
 	}
-	
-	public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll){
+
+	public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll) {
 		List<Assignment> result = null;
 		if (isCyclic()) {
 			CpNetCSP csp = generateCSP();
 			result = csp.solve(strategy, csp, true);
-			
 
 			for (Constraint i : csp.getConstraints())
 				System.out.println(i);
@@ -414,7 +358,7 @@ public class CPNet {
 			result = new ArrayList<Assignment>();
 			Assignment a = solveAcyclicCPNet(new Assignment(), variables);
 			result.add(a);
-			System.out.println("La cp net aciclica ha come unica soluzione "+ a.toString());
+			System.out.println("La cp net aciclica ha come unica soluzione " + a.toString());
 		}
 		return result;
 	}
@@ -425,11 +369,11 @@ public class CPNet {
 		CPNet c = new CPNet(30, 15);
 
 		List<Assignment> list = c.getOptimalSolution(Inference.NONE, true);
-		
-		if(list.isEmpty()) System.out.println("NESSUNA SOLUZIONE  OTTIMA");
+
+		if (list.isEmpty())
+			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
 		for (Assignment a : list)
 			System.out.println("SOL=" + a);
-		
 
 		ViewGraph view = new ViewGraph(c);
 		view.setVisible(true);
