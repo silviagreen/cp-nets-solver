@@ -8,6 +8,7 @@ import java.util.Stack;
 import com.sun.istack.internal.Pool.Impl;
 
 import csp.Assignment;
+import csp.CSP;
 import csp.Constraint;
 import csp.CpNetCSP;
 import csp.Implies;
@@ -217,208 +218,218 @@ public class CPNet {
 
 		return result;
 	}
+	
+	private List<Variable> generateVariables(){
+		List<Variable> variables = new ArrayList<Variable>();
+		for (Vertex v : getAdjList()) {
+			Variable var = new Variable(Integer.toString(v.getID()));
+			variables.add(var);
+		}
+		return variables;
+	}
+	
+	public CpNetCSP generateCSP(){
+		List<Implies> constraints = new ArrayList<Implies>();
+		List<Variable> variables = generateVariables();
+
+		//System.out.println(variables);
+		// for(Vertex v : c.getAdjList()){
+		// String ris = v.getID() + " ha parens ";
+		// for(Integer p : v.getParents()){
+		// ris += String.valueOf(p);
+		// }
+		// System.out.println(ris);
+		// }
+
+		for (Vertex v : getAdjList()) {
+
+			System.out.println("vertice: " + v.getID());
+			// la var che sto considerando è la tesi del vincolo.
+			// con isAffirmedValue la tesi vale 1, altrimento vale 0
+			// le ipotesi sono il binary value
+
+			v.setAffirmedLists();
+			// System.out.println("fatte liste");
+
+			Variable var = ListUtils.getVariable(variables,
+					String.valueOf(v.getID()));
+
+			// lista positivi
+			System.out.println("POSITIVI");
+			List<Assignment> pos = new ArrayList<Assignment>();
+			Assignment thesis1 = new Assignment();
+			List<Variable> hp1 = new ArrayList<Variable>();
+
+			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
+			thesis1.setAssignment(var, 1);
+			pos.add(thesis1);}
+			
+			// char[] binaryValue = new char[v.getParents().size()];
+
+			if (!v.getParents().isEmpty()) {
+				for (Preference p : v.affirmed) {
+
+					// int[] binVal =
+					// ListUtils.decToBin(p.getBinaryValue());
+					List<Integer> binVal = ListUtils.decToBin(p
+							.getBinaryValue());
+
+					// String bv = Integer.toString(p.getBinaryValue());
+					Assignment a = new Assignment();
+					// int diff = (v.getParents().size()) - (bv.length());
+					int diff = (v.getParents().size()) - (binVal.size());
+					System.out.println("bin val " + binVal.toString()
+							+ " has length " + binVal.size()
+							+ " con parents " + v.getParents().size());
+					System.out.println("diff = " + diff);
+					// List<Integer> binvalList =
+					// ListUtils.fromArrayToIntList(binVal);
+					while (diff != 0) {
+						// bv = (new StringBuffer(bv)).insert(0,
+						// "0").toString();
+
+						binVal.add(0, 0);
+						System.out.println("binval list = "
+								+ binVal.toString());
+						diff--;
+						// if(diff == 0) {
+						// for(int ii = 0; ii < binvalList.size(); ii++){
+						// int intero =(int) binvalList.get(ii);
+						// binVal[ii] = intero;
+						// }
+						// }
+					}
+					System.out.println(v.getID() + " ha binary value "
+							+ binVal.toString() + " e ha "
+							+ v.getParents().size() + " parents");
+					// binaryValue = bv.toCharArray();
+					int i = 0;
+
+					// Integer pref = new Integer(binVal.get(i));
+					// Integer pref = new Integer(
+					// Character.getNumericValue(binaryValue[i]));
+					// System.out.println("BIN VAL " + binaryValue +
+					// " has length " + binaryValue.length);
+					// while (i != binaryValue.length) {
+					while (i != binVal.size()) {
+						Variable varHp = ListUtils.getVariable(variables,
+								String.valueOf(v.getParents().get(i)));
+						// pref = new
+						// Integer(Character.getNumericValue(binaryValue[i]));
+						Integer pref = new Integer((binVal.get(i)));
+						System.out
+								.println("preferenza: " + varHp.toString()
+										+ ", " + pref.toString());
+						a.setAssignment(varHp, pref);
+						if (!hp1.contains(varHp)) {
+							hp1.add(varHp);
+						}
+						i++;
+						// variabili in hp1
+					}// Character.getNumericValue(binaryValue[i])
+					pos.add(a);
+
+					System.out.println("nell'ipotesi ci sono " + hp1.size()
+							+ " var d'ipotesi");
+				}
+			}
+			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
+			Implies i = new Implies(var, hp1, pos);
+			constraints.add(i);}
+
+			// lista negativi
+			System.out.println("NEGATIVI");
+			List<Assignment> neg = new ArrayList<Assignment>();
+			Assignment thesis0 = new Assignment();
+			List<Variable> hp0 = new ArrayList<Variable>();
+
+			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
+			thesis0.setAssignment(var, 0);
+			neg.add(thesis0);}
+
+			// char[] binaryValue0 = new char[v.getParents().size()];//
+
+			if (!v.getParents().isEmpty()) {
+				for (Preference p : v.notAffirmed) {
+					// System.out.println("preferenze negative");
+					// String bv = Integer.toString(p.getBinaryValue());
+					List<Integer> binVal = ListUtils.decToBin(p
+							.getBinaryValue());
+					Assignment a = new Assignment();
+
+					int diff = (v.getParents().size()) - (binVal.size());
+					System.out.println("bin val " + binVal.toString()
+							+ " has length " + binVal.size());
+					System.out.println("diff = " + diff);
+					while (diff != 0) {
+						// bv = (new StringBuffer(bv)).insert(0,
+						// "0").toString();
+						binVal.add(0, 0);
+						diff--;
+					}
+					// binaryValue0 = bv.toCharArray();
+					System.out.println(v.getID() + " ha binary value "
+							+ binVal.toString() + " e ha "
+							+ v.getParents().size() + " parents");
+
+					int i0 = 0;
+
+					// Integer pref = new
+					// Integer(Character.getNumericValue(binaryValue0[i0]));
+					while (i0 != binVal.size()) {
+						Variable varHp = ListUtils.getVariable(variables, String.valueOf(v.getParents().get(i0)));
+						Integer pref = new Integer((binVal.get(i0)));
+						a.setAssignment(varHp, pref);
+						if (!hp0.contains(varHp)) {
+							hp0.add(varHp);
+						}
+						i0++;
+						// var in hp0
+					}// Character.getNumericValue(binaryValue[i])
+					neg.add(a);
+
+				}
+			}
+			if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
+			Implies i0 = new Implies(var, hp0, neg);
+			constraints.add(i0);}
+
+		}
+		
+		CpNetCSP csp = new CpNetCSP(variables, constraints);
+		return csp;
+	}
+	
+	public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll){
+		List<Assignment> result = null;
+		if (isCyclic()) {
+			CpNetCSP csp = generateCSP();
+			result = csp.solve(strategy, csp, true);
+			
+
+			for (Constraint i : csp.getConstraints())
+				System.out.println(i);
+		} else {
+			List<Variable> variables = generateVariables();
+			result = new ArrayList<Assignment>();
+			Assignment a = solveAcyclicCPNet(new Assignment(), variables);
+			result.add(a);
+			System.out.println("La cp net aciclica ha come unica soluzione "+ a.toString());
+		}
+		return result;
+	}
 
 	public static void main(String[] args) {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
 		CPNet c = new CPNet(30, 15);
 
-		List<Variable> variables = new ArrayList<Variable>();
-		for (Vertex v : c.getAdjList()) {
-			Variable var = new Variable(Integer.toString(v.getID()));
-			variables.add(var);
-		}
-
-		if (c.isCyclic()) {
-
-			List<Implies> constraints = new ArrayList<Implies>();
-
-			System.out.println(variables);
-			// for(Vertex v : c.getAdjList()){
-			// String ris = v.getID() + " ha parens ";
-			// for(Integer p : v.getParents()){
-			// ris += String.valueOf(p);
-			// }
-			// System.out.println(ris);
-			// }
-
-			for (Vertex v : c.getAdjList()) {
-
-				System.out.println("vertice: " + v.getID());
-				// la var che sto considerando è la tesi del vincolo.
-				// con isAffirmedValue la tesi vale 1, altrimento vale 0
-				// le ipotesi sono il binary value
-
-				v.setAffirmedLists();
-				// System.out.println("fatte liste");
-
-				Variable var = ListUtils.getVariable(variables,
-						String.valueOf(v.getID()));
-
-				// lista positivi
-				System.out.println("POSITIVI");
-				List<Assignment> pos = new ArrayList<Assignment>();
-				Assignment thesis1 = new Assignment();
-				List<Variable> hp1 = new ArrayList<Variable>();
-
-				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
-				thesis1.setAssignment(var, 1);
-				pos.add(thesis1);}
-				
-				// char[] binaryValue = new char[v.getParents().size()];
-
-				if (!v.getParents().isEmpty()) {
-					for (Preference p : v.affirmed) {
-
-						// int[] binVal =
-						// ListUtils.decToBin(p.getBinaryValue());
-						List<Integer> binVal = ListUtils.decToBin(p
-								.getBinaryValue());
-
-						// String bv = Integer.toString(p.getBinaryValue());
-						Assignment a = new Assignment();
-						// int diff = (v.getParents().size()) - (bv.length());
-						int diff = (v.getParents().size()) - (binVal.size());
-						System.out.println("bin val " + binVal.toString()
-								+ " has length " + binVal.size()
-								+ " con parents " + v.getParents().size());
-						System.out.println("diff = " + diff);
-						// List<Integer> binvalList =
-						// ListUtils.fromArrayToIntList(binVal);
-						while (diff != 0) {
-							// bv = (new StringBuffer(bv)).insert(0,
-							// "0").toString();
-
-							binVal.add(0, 0);
-							System.out.println("binval list = "
-									+ binVal.toString());
-							diff--;
-							// if(diff == 0) {
-							// for(int ii = 0; ii < binvalList.size(); ii++){
-							// int intero =(int) binvalList.get(ii);
-							// binVal[ii] = intero;
-							// }
-							// }
-						}
-						System.out.println(v.getID() + " ha binary value "
-								+ binVal.toString() + " e ha "
-								+ v.getParents().size() + " parents");
-						// binaryValue = bv.toCharArray();
-						int i = 0;
-
-						// Integer pref = new Integer(binVal.get(i));
-						// Integer pref = new Integer(
-						// Character.getNumericValue(binaryValue[i]));
-						// System.out.println("BIN VAL " + binaryValue +
-						// " has length " + binaryValue.length);
-						// while (i != binaryValue.length) {
-						while (i != binVal.size()) {
-							Variable varHp = ListUtils.getVariable(variables,
-									String.valueOf(v.getParents().get(i)));
-							// pref = new
-							// Integer(Character.getNumericValue(binaryValue[i]));
-							Integer pref = new Integer((binVal.get(i)));
-							System.out
-									.println("preferenza: " + varHp.toString()
-											+ ", " + pref.toString());
-							a.setAssignment(varHp, pref);
-							if (!hp1.contains(varHp)) {
-								hp1.add(varHp);
-							}
-							i++;
-							// variabili in hp1
-						}// Character.getNumericValue(binaryValue[i])
-						pos.add(a);
-
-						System.out.println("nell'ipotesi ci sono " + hp1.size()
-								+ " var d'ipotesi");
-					}
-				}
-				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && v.getPreferences().get(0).getIsAffirmedValue()) ){
-				Implies i = new Implies(var, hp1, pos);
-				constraints.add(i);}
-
-				// lista negativi
-				System.out.println("NEGATIVI");
-				List<Assignment> neg = new ArrayList<Assignment>();
-				Assignment thesis0 = new Assignment();
-				List<Variable> hp0 = new ArrayList<Variable>();
-
-				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
-				thesis0.setAssignment(var, 0);
-				neg.add(thesis0);}
-
-				// char[] binaryValue0 = new char[v.getParents().size()];//
-				// aggiungere
-				// zeri
-				// davanti
-				// se ci
-				// sono
-				// spazi
-				// vuoti
-				if (!v.getParents().isEmpty()) {
-					for (Preference p : v.notAffirmed) {
-						// System.out.println("preferenze negative");
-						// String bv = Integer.toString(p.getBinaryValue());
-						List<Integer> binVal = ListUtils.decToBin(p
-								.getBinaryValue());
-						Assignment a = new Assignment();
-
-						int diff = (v.getParents().size()) - (binVal.size());
-						System.out.println("bin val " + binVal.toString()
-								+ " has length " + binVal.size());
-						System.out.println("diff = " + diff);
-						while (diff != 0) {
-							// bv = (new StringBuffer(bv)).insert(0,
-							// "0").toString();
-							binVal.add(0, 0);
-							diff--;
-						}
-						// binaryValue0 = bv.toCharArray();
-						System.out.println(v.getID() + " ha binary value "
-								+ binVal.toString() + " e ha "
-								+ v.getParents().size() + " parents");
-
-						int i0 = 0;
-
-						// Integer pref = new
-						// Integer(Character.getNumericValue(binaryValue0[i0]));
-						while (i0 != binVal.size()) {
-							Variable varHp = ListUtils.getVariable(variables,
-									String.valueOf(v.getParents().get(i0)));
-							Integer pref = new Integer((binVal.get(i0)));
-							a.setAssignment(varHp, pref);
-							if (!hp0.contains(varHp)) {
-								hp0.add(varHp);
-							}
-							i0++;
-							// var in hp0
-						}// Character.getNumericValue(binaryValue[i])
-						neg.add(a);
-
-					}
-				}
-				if(!v.getParents().isEmpty() || (v.getParents().isEmpty() && !v.getPreferences().get(0).getIsAffirmedValue()) ){
-				Implies i0 = new Implies(var, hp0, neg);
-				constraints.add(i0);}
-
-			}
-
-			CpNetCSP csp = new CpNetCSP(variables, constraints);
-			System.out.println("provo a risolvere");
-			List<Assignment> result = csp.solve(Inference.NONE, csp, true);
-			if(result.isEmpty()) System.out.println("NESSUNA SOLUZIONE  OTTIMA");
-			for (Assignment a : result)
-				System.out.println("SOL=" + a);
-
-			for (Constraint i : csp.getConstraints())
-				System.out.println(i);
-		} else {
-			Assignment a = c.solveAcyclicCPNet(new Assignment(), variables);
-			System.out.println("La cp net aciclica ha come unica soluzione "
-					+ a.toString());
-			System.out.println("");
-		}
+		List<Assignment> list = c.getOptimalSolution(Inference.NONE, true);
+		
+		if(list.isEmpty()) System.out.println("NESSUNA SOLUZIONE  OTTIMA");
+		for (Assignment a : list)
+			System.out.println("SOL=" + a);
+		
 
 		ViewGraph view = new ViewGraph(c);
 		view.setVisible(true);
