@@ -35,24 +35,25 @@ public class Implies implements Constraint {
 			Object Hass = assignments.get(0).getAssignment(thesis);
 			if (ass.equals(Hass) && hypothesis.isEmpty() == false) {
 				// controllo ipotesi
-				boolean satisfied = true;;
+				boolean satisfied = true;
 				for (Assignment a : assignments.subList(1, assignments.size())) {
-					System.out.println(a.size());
+					satisfied = true;
+					//System.out.println(a.size());
 					for (Variable v : hypothesis) {
-						System.out.println("provo" + a + "con var " + v.getName());
+						//System.out.println("provo" + a + "con var " + v.getName());
 						if (Hassignment.hasAssignmentFor(v)	&& !((Hassignment.getAssignment(v)).equals(a.getAssignment(v)))){
-							System.out.println("var " + v.getName() + "non ok");
+							//System.out.println("var " + v.getName() + "non ok");
 							satisfied = false;
 							break;}
 					}
 					if(satisfied) return true; 
 
 				}
-				System.out.println(satisfied);
+				//System.out.println(satisfied);
 				if(satisfied) return true;
-				else return false;
+				else {System.out.println("VINCOLO VIOLATO: " + this.toString()); return false;}
 			} else if(ass.equals(Hass) && hypothesis.isEmpty()  == true) return true;
-			else if(!ass.equals(Hass) && hypothesis.isEmpty() == true) return false;
+			else if(!ass.equals(Hass) && hypothesis.isEmpty() == true){System.out.println("VINCOLO VIOLATO: " + this.toString()); return false;}
 				return true; // altrimenti vado avanti
 		}
 		return true;
@@ -66,6 +67,7 @@ public class Implies implements Constraint {
 			ris += "<";
 			for (Variable v : hypothesis) {
 			ass = a.getAssignment(v);
+			
 			ris += v.getName() + " = " + ass.toString() + ", ";
 		}
 			ris += ">";

@@ -98,7 +98,8 @@ public class BacktrackingStrategy extends SolutionStrategy {
 			for (Object value : orderDomainValues(var, assignment, csp)) {
 				//System.out.println("var: " + var.getName() + " = " + value.toString());
 				assignment.setAssignment(var, value);
-				if (assignment.isConsistent(csp.getConstraints(var))) {
+				System.out.println("assegnamento corrente:" + assignment);
+				if (assignment.isConsistent(csp.getConstraints(var))) { System.out.println("è consistente");
 					//csp = inference(var, assignment, csp);
 					DomainRestoreInfo info = inference(var, assignment, csp);
 					//if(csp !=null)
