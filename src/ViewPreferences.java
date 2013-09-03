@@ -26,7 +26,17 @@ public class ViewPreferences extends JPanel{
             this.add(l);
             List<Preference> prefs=v.getPreferences();
             for(Preference p: prefs){
-                l=new Label(p.toString());
+            	List<Integer> binaryValue = p.getBinaryValueInList(v.getParents().size());
+            	String hypothesis = "";
+            	for (int k = 0; k < binaryValue.size(); k++){
+            		if(binaryValue.get(k).equals(1)) hypothesis += v.getParents().get(k).toString();
+            		else if(binaryValue.get(k).equals(0)) hypothesis += "!" +  v.getParents().get(k).toString();
+            	}
+            	String implies =  " -> ";
+            	String thesis =  (p.getIsAffirmedValue() ? p.getVariableName() + " > !" + p.getVariableName()  : "!" + p.getVariableName() + " > " + p.getVariableName());
+                if(v.getParents().isEmpty()) l = new Label(thesis);
+                else l=new Label(hypothesis+implies+thesis);
+            	//l=new Label(p.toString());
                 this.add(l);
             }
         }

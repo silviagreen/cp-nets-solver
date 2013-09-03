@@ -38,6 +38,10 @@ public class Preference {
         	return binaryValue;
         }
         
+        public int getVariableName(){
+        	return variableName;
+        }
+        
 	public boolean setIsAffirmedVariable(boolean isAV) {
 		//System.out.println("--------Stato attuale di " + Integer.toBinaryString(this.binaryValue) + "b : " + this.isAffirmedVariable);
 		if(this.isAffirmedVariable == null) {
