@@ -23,6 +23,11 @@ public class CPNet {
 	private List<Vertex> adjList;
 	private int nVertex;
 	private int nEdges;
+	private boolean isCyclic;
+	
+	boolean getIsCyclic(){
+		return isCyclic;
+	}
 
 	List<Vertex> indepList = new ArrayList<Vertex>();
         private int MAX_ITERATION_LS=10000;
@@ -143,6 +148,7 @@ public class CPNet {
 			}
 			i++;
 		}
+		isCyclic = existedge;
 		return existedge;
 	}
 
@@ -386,7 +392,7 @@ public class CPNet {
 			for (Constraint i : csp.getConstraints())
 				System.out.println(i);
 		} else {
-			strategy = null;
+			
 			List<Variable> variables = generateVariables();
 			result = new ArrayList<Assignment>();
 			Assignment a = solveAcyclicCPNet(new Assignment(), variables);
@@ -462,29 +468,31 @@ public class CPNet {
             return solution;
         }
         
-        private String setStrategyName(Inference strategy){
-        	String str = "";
-        	switch(strategy){
-        	case NONE:
-        		str = "Backtracking";
-        		break;
-        	case AC3:
-        		str = "Backtracking + propagazione di vincoli (AC3)";
-        		break;
-        	case FORWARD_CHECKING:
-        		str = "Backtracking + forward checking";
-        		break;
-        	default:
-        		str = "Sweep Forward";
-        		break;
-        	}
-        	return str;
-        		
-        }
+	private String setStrategyName(Inference strategy) {
+		String str = "";
+		if (!isCyclic)
+			str = "Sweep Forward";
+		else {
+			switch (strategy) {
+			case NONE:
+				str = "Backtracking";
+				break;
+			case AC3:
+				str = "Backtracking + propagazione di vincoli (AC3)";
+				break;
+			case FORWARD_CHECKING:
+				str = "Backtracking + forward checking";
+				break;
+			}
+		}
+		return str;
+
+	}
         
 	public static void main(String[] args) {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
+		//CPNet c = new CPNet(30, 15);
 		CPNet c = new CPNet(4, 8);
 		CPNet cc = new CPNet(c);
 		
