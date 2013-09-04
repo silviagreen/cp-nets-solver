@@ -485,6 +485,7 @@ public class CPNet {
 				break;
 			}
 		}
+		
 		return str;
 
 	}
