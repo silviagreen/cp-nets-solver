@@ -20,7 +20,7 @@ public class ViewGraph extends JFrame {
 
     private CPNet _model = null;
 
-    public ViewGraph(CPNet cpnet, List<Assignment> solutions1) {
+    public ViewGraph(CPNet cpnet, List<Assignment> solutions1, double time, String strategy) {
         super("View CPNet");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	this.setSize(500, 500);
@@ -32,14 +32,17 @@ public class ViewGraph extends JFrame {
         ViewPreferences pref=new ViewPreferences(_model);
         JScrollPane scroll=new JScrollPane(pref);
         
-       
-        
         String textSol1 = "";
-        for(Assignment a : solutions1){
-        	textSol1 += a.toString();
-        	textSol1 += "\n";
+        if(solutions1.isEmpty()) textSol1 += "Nessuna soluzione ottima\n";
+        else{
+        	for(Assignment a : solutions1){
+        		textSol1 += a.toString();
+        		textSol1 += "\n";
+        	}
         }
-        JTextArea ta = new JTextArea("SOLUZIONI OTTIME\n" + textSol1);
+        String timeCalc = "Tempo di calcolo: " + time + " s";
+        
+        JTextArea ta = new JTextArea("Algoritmo usato: " + strategy + "\n" + "SOLUZIONI OTTIME\n" + textSol1 + "\n" + timeCalc);
         ta.setEditable(false);
         JScrollPane scroll2=new JScrollPane(ta);
         

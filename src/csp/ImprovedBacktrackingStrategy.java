@@ -239,4 +239,6 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 	public enum Inference {
 		NONE, FORWARD_CHECKING, AC3
 	}
+	
+	
 }

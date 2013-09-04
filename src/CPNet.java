@@ -16,6 +16,7 @@ import csp.ListUtils;
 import csp.ImprovedBacktrackingStrategy.Inference;
 import csp.Variable;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 public class CPNet {
 
@@ -385,6 +386,7 @@ public class CPNet {
 			for (Constraint i : csp.getConstraints())
 				System.out.println(i);
 		} else {
+			strategy = null;
 			List<Variable> variables = generateVariables();
 			result = new ArrayList<Assignment>();
 			Assignment a = solveAcyclicCPNet(new Assignment(), variables);
@@ -460,24 +462,51 @@ public class CPNet {
             return solution;
         }
         
+        private String setStrategyName(Inference strategy){
+        	String str = "";
+        	switch(strategy){
+        	case NONE:
+        		str = "Backtracking";
+        		break;
+        	case AC3:
+        		str = "Backtracking + propagazione di vincoli (AC3)";
+        		break;
+        	case FORWARD_CHECKING:
+        		str = "Backtracking + forward checking";
+        		break;
+        	default:
+        		str = "Sweep Forward";
+        		break;
+        	}
+        	return str;
+        		
+        }
+        
 	public static void main(String[] args) {
 		// TODO: trattare var indip e committare
 		// Inference strategy = Inference.NONE;
 		CPNet c = new CPNet(4, 8);
 		CPNet cc = new CPNet(c);
-		List<Assignment> list = c.getOptimalSolution(Inference.NONE, true);
-
+		
+		Inference strategy = Inference.NONE;
+		long start = System.currentTimeMillis();
+		List<Assignment> list = c.getOptimalSolution(strategy, true);
+		long end = System.currentTimeMillis();
+		double timeCalc = ((end-start)/1000.0);
+		
+		//print di test
 		if (list.isEmpty())
 			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
 		for (Assignment a : list)
 			System.out.println("SOL=" + a);
-
+		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
 		
                 
                 Instance solution=cc.solveWithLocalSearch();
                 System.out.println(solution.toString());
                 
-                ViewGraph view = new ViewGraph(c, list);
+       
+                ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
         		view.setVisible(true);     
                 
 	}
