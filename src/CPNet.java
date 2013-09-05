@@ -491,8 +491,6 @@ public class CPNet {
 	}
         
 	public static void main(String[] args) {
-		// TODO: trattare var indip e committare
-		// Inference strategy = Inference.NONE;
 		//CPNet c = new CPNet(30, 15);
 		CPNet c = new CPNet(4, 8);
 		CPNet cc = new CPNet(c);
@@ -517,6 +515,18 @@ public class CPNet {
        
                 ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
         		view.setVisible(true);     
+		
+        		//test per generare ordinamento parziale delle solutioni
+/*		CPNet cp = new CPNet(5,4);
+		PartialOrderSolutionGraph p = new PartialOrderSolutionGraph(cp);
+		List<Assignment> list = cp.getOptimalSolution(Inference.NONE, true);
+		if(list.isEmpty()) System.out.println("NO SOL");
+		p.setPartialOrderSolutions(new Solution(list.get(0).toValueString()));
+		Inference strategy = Inference.NONE;
+		ViewGraph view = new ViewGraph(cp, list, 0, cp.setStrategyName(strategy));
+		view.setVisible(true); 
+		System.out.println(p.toString());*/
+		
                 
 	}
 

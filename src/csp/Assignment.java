@@ -119,4 +119,11 @@ public class Assignment {
 		result.append("}");
 		return result.toString();
 	}
+	
+	public String toValueString(){
+		String val = "";
+		for(Variable v :variables)
+			val += (getAssignment(v)).toString();
+		return val;
+	}
 }
