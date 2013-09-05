@@ -25,6 +25,7 @@ public class CPNet {
 	private int nEdges;
 	private boolean isCyclic;
 	private PartialOrderSolutionGraph p;
+	private List<Assignment> solutions = null;
 	
 	boolean getIsCyclic(){
 		return isCyclic;
@@ -403,14 +404,27 @@ public class CPNet {
 			result.add(a);
 			System.out.println("La cp net aciclica ha come unica soluzione " + a.toString());
 		}
-		if(!result.isEmpty()){
-			p = new PartialOrderSolutionGraph(this);
-			p.setPartialOrderSolutions(new Solution(result.get(0).toValueString()));
-		}
-		else p = null;
+//		if(!result.isEmpty()){
+//			p = new PartialOrderSolutionGraph(this);
+//			//p.setPartialOrderSolutions(new Solution(result.get(0).toValueString()));
+//		}
+//		else p = null;
+		solutions = result;
 		return result;
 	}
+	
+	public List<Assignment> getSolutions(){
+		return solutions;
+	}
 
+	public boolean generatePartialOrderSolution(Solution s){
+		if(s == null) return false;
+		else{
+			p = new PartialOrderSolutionGraph(this);
+			p.setPartialOrderSolutions(s);
+			return true;
+		}
+	}
         private Instance generateRandomAssignment(){
             Instance ass=new Instance();
             for(int i=0;i<this.adjList.size();i++){
@@ -501,7 +515,8 @@ public class CPNet {
         
 	public static void main(String[] args) {
 		//CPNet c = new CPNet(30, 15);
-		CPNet c = new CPNet(4, 8);
+		//CPNet c = new CPNet(4, 8);
+		CPNet c = new CPNet(3, 2);
 		CPNet cc = new CPNet(c);
 		
 		Inference strategy = Inference.NONE;
@@ -518,8 +533,8 @@ public class CPNet {
 		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
 		//System.out.println(c.p.toString());
                 
-                Instance solution=cc.solveWithLocalSearch();
-                System.out.println(solution.toString());
+                //Instance solution=cc.solveWithLocalSearch();
+                //System.out.println(solution.toString());
                 
        
                 ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
