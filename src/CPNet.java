@@ -24,11 +24,15 @@ public class CPNet {
 	private int nVertex;
 	private int nEdges;
 	private boolean isCyclic;
+	private PartialOrderSolutionGraph p;
 	
 	boolean getIsCyclic(){
 		return isCyclic;
 	}
 
+	PartialOrderSolutionGraph getPartialOrderSol(){
+		return p;
+	}
 	List<Vertex> indepList = new ArrayList<Vertex>();
         private int MAX_ITERATION_LS=10000;
 
@@ -399,6 +403,11 @@ public class CPNet {
 			result.add(a);
 			System.out.println("La cp net aciclica ha come unica soluzione " + a.toString());
 		}
+		if(!result.isEmpty()){
+			p = new PartialOrderSolutionGraph(this);
+			p.setPartialOrderSolutions(new Solution(result.get(0).toValueString()));
+		}
+		else p = null;
 		return result;
 	}
 
@@ -507,27 +516,37 @@ public class CPNet {
 		for (Assignment a : list)
 			System.out.println("SOL=" + a);
 		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
-		
+		//System.out.println(c.p.toString());
                 
                 Instance solution=cc.solveWithLocalSearch();
                 System.out.println(solution.toString());
                 
        
                 ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
-        		view.setVisible(true);     
+        		view.setVisible(true); 
 		
-        		//test per generare ordinamento parziale delle solutioni
-/*		CPNet cp = new CPNet(5,4);
+/*        		//test per generare ordinamento parziale delle solutioni
+		CPNet cp = new CPNet(3,2);
 		PartialOrderSolutionGraph p = new PartialOrderSolutionGraph(cp);
 		List<Assignment> list = cp.getOptimalSolution(Inference.NONE, true);
+		
 		if(list.isEmpty()) System.out.println("NO SOL");
+		
 		p.setPartialOrderSolutions(new Solution(list.get(0).toValueString()));
+		cp.setP(p);
+		
 		Inference strategy = Inference.NONE;
 		ViewGraph view = new ViewGraph(cp, list, 0, cp.setStrategyName(strategy));
 		view.setVisible(true); 
 		System.out.println(p.toString());*/
 		
                 
+	}
+
+	
+
+	public void setP(PartialOrderSolutionGraph p) {
+		this.p = p;
 	}
 
 }

@@ -162,7 +162,7 @@ public class PartialOrderSolutionGraph {
 	@Override
 	public String toString() {
 		String ris ="LIST ADJ:\n";
-		for(Solution s : solutions){
+		for(Solution s : getSolutions()){
 			String sol = s.getValue() + ": ";
 			for(Solution subs : s.getSubSols()){
 				sol += subs.getValue() + " ";

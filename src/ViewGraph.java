@@ -23,12 +23,13 @@ public class ViewGraph extends JFrame {
     public ViewGraph(CPNet cpnet, List<Assignment> solutions1, double time, String strategy) {
         super("View CPNet");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	this.setSize(500, 500);
+        this.setSize(1000, 500);
         this.setLocation(300, 200);
         _model = cpnet;
         final mxGraph graph = new mxGraph();
         mxGraphComponent graphComponent = new mxGraphComponent(graph);
-        getContentPane().add(BorderLayout.CENTER,graphComponent);
+        getContentPane().add(BorderLayout.LINE_START,graphComponent);
+        graphComponent.setPreferredSize(new Dimension(600,300));
         ViewPreferences pref=new ViewPreferences(_model);
         JScrollPane scroll=new JScrollPane(pref);
         
@@ -50,6 +51,13 @@ public class ViewGraph extends JFrame {
         scroll2.setPreferredSize(new Dimension(150,100));
         getContentPane().add(BorderLayout.EAST,scroll);
         getContentPane().add(BorderLayout.SOUTH,scroll2);
+        
+		if (_model.getPartialOrderSol() != null) {
+			ViewGraph2 sols = new ViewGraph2(_model.getPartialOrderSol());
+			getContentPane().add(BorderLayout.CENTER, sols.getGraphComponent());
+			sols.getGraphComponent().setPreferredSize(new Dimension(500, 500));
+		}
+        
         Object parent = graph.getDefaultParent();
 
         graph.getModel().beginUpdate();
