@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +15,8 @@ import csp.ListUtils;
 import csp.ImprovedBacktrackingStrategy.Inference;
 import csp.Variable;
 import java.util.Collections;
+
+import sun.nio.cs.ext.ISCII91;
 
 public class CPNet {
 
@@ -567,50 +574,111 @@ public class CPNet {
 		return str;
 
 	}
+	
+	public static void test1(Inference strategy, int nNodi, int nArchi) {
+		int k = 1;
+		List<Double> tempiMine = new ArrayList<Double>();
+		List<Double> tempiLS = new ArrayList<Double>();
+		while(k<=10){
+			CPNet c = new CPNet(nNodi, nArchi);
+			if(c.isCyclic()){
+				long start = System.currentTimeMillis();
+				List<Assignment> list = c.getOptimalSolution(strategy, true);
+				long end = System.currentTimeMillis();
+				double timeCalc = ((end-start)/1000.0);
+				tempiMine.add(timeCalc);
+				
+				start = System.currentTimeMillis();
+				Instance s = c.solveWithLocalSearch();
+				end = System.currentTimeMillis();
+				double timeCalcLS = ((end - start)/1000.0);
+				tempiLS.add(timeCalcLS);
+				k++;
+			}
+		}
+		System.out.println("FATTE " + k + "SIMULAIZONI");
+		double mediaMine = 0.0;
+		double sum = 0.0;
+		
+		for(Double d : tempiMine)
+			sum += d;
+		mediaMine = sum / ((double) tempiMine.size());
+		
+		double mediaLS = 0.0;
+		double sumLS = 0.0;
+		for(Double d : tempiLS)
+			sumLS += d;
+		mediaMine = sumLS / ((double) tempiLS.size());
+		DecimalFormat df = new DecimalFormat("##.###");
+		
+		File file = new File("ciclico_"+nNodi+"_"+nArchi);
+		try{
+		if(!file.exists()){
+			file.createNewFile();
+		
+		}
+		//true = append file
+		FileWriter fileWritter = new FileWriter(file.getName(),true);
+	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+	        bufferWritter.write(Double.toString(mediaMine)+", " +Double.toString(mediaLS) +"\n");
+	        bufferWritter.close();
+		
+		}catch(IOException e){
+			System.out.println("IOExc");
+		}
+        System.out.println("Done");
+		
+	}
         
 	public static void main(String[] args) {
-		//CPNet c = new CPNet(30, 15);
-		//CPNet c = new CPNet(4, 8);
-		//CPNet c = new CPNet(3, 2);
-                CPNet c = createTest1();
+		CPNet.test1(Inference.NONE, 10, 5);
+		CPNet.test1(Inference.NONE, 10, 10);
+		CPNet.test1(Inference.NONE, 10, 15);
+		CPNet.test1(Inference.NONE, 10, 30);
+		System.out.println("END TEST");
 		
-		Inference strategy = Inference.NONE;
-		long start = System.currentTimeMillis();
-		List<Assignment> list = c.getOptimalSolution(strategy, true);
-		long end = System.currentTimeMillis();
-		double timeCalc = ((end-start)/1000.0);
-		
-		//print di test
-		if (list.isEmpty())
-			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
-		for (Assignment a : list)
-			System.out.println("SOL=" + a);
-		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
-		//System.out.println(c.p.toString());
-                
-                //Instance solution=cc.solveWithLocalSearch();
-                //System.out.println(solution.toString());
-                
-       
-                ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
-        		view.setVisible(true); 
-		
-/*        		//test per generare ordinamento parziale delle solutioni
-		CPNet cp = new CPNet(3,2);
-		PartialOrderSolutionGraph p = new PartialOrderSolutionGraph(cp);
-		List<Assignment> list = cp.getOptimalSolution(Inference.NONE, true);
-		
-		if(list.isEmpty()) System.out.println("NO SOL");
-		
-		p.setPartialOrderSolutions(new Solution(list.get(0).toValueString()));
-		cp.setP(p);
-		
-		Inference strategy = Inference.NONE;
-		ViewGraph view = new ViewGraph(cp, list, 0, cp.setStrategyName(strategy));
-		view.setVisible(true); 
-		System.out.println(p.toString());*/
-		Instance s = c.solveWithLocalSearch();
-                System.out.println(s);
+//		//CPNet c = new CPNet(30, 15);
+//		CPNet c = new CPNet(10, 50);
+//		//CPNet c = new CPNet(3, 2);
+//               // CPNet c = createTest1();
+//		
+//		Inference strategy = Inference.NONE;
+//		long start = System.currentTimeMillis();
+//		List<Assignment> list = c.getOptimalSolution(strategy, true);
+//		long end = System.currentTimeMillis();
+//		double timeCalc = ((end-start)/1000.0);
+//		
+//		//print di test
+//		if (list.isEmpty())
+//			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
+//		for (Assignment a : list)
+//			System.out.println("SOL=" + a);
+//		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
+//		//System.out.println(c.p.toString());
+//                
+//                //Instance solution=cc.solveWithLocalSearch();
+//                //System.out.println(solution.toString());
+//                
+//       
+//                ViewGraph view = new ViewGraph(c, list, timeCalc, c.setStrategyName(strategy));
+//        		view.setVisible(true); 
+//		
+///*        		//test per generare ordinamento parziale delle solutioni
+//		CPNet cp = new CPNet(3,2);
+//		PartialOrderSolutionGraph p = new PartialOrderSolutionGraph(cp);
+//		List<Assignment> list = cp.getOptimalSolution(Inference.NONE, true);
+//		
+//		if(list.isEmpty()) System.out.println("NO SOL");
+//		
+//		p.setPartialOrderSolutions(new Solution(list.get(0).toValueString()));
+//		cp.setP(p);
+//		
+//		Inference strategy = Inference.NONE;
+//		ViewGraph view = new ViewGraph(cp, list, 0, cp.setStrategyName(strategy));
+//		view.setVisible(true); 
+//		System.out.println(p.toString());*/
+//		Instance s = c.solveWithLocalSearch();
+//                System.out.println(s);
 	}
 
 	
