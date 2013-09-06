@@ -1,14 +1,8 @@
 import java.util.ArrayList;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
-
-import com.sun.istack.internal.Pool.Impl;
-
 import csp.Assignment;
-import csp.CSP;
 import csp.Constraint;
 import csp.CpNetCSP;
 import csp.Implies;
@@ -16,33 +10,28 @@ import csp.ListUtils;
 import csp.ImprovedBacktrackingStrategy.Inference;
 import csp.Variable;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 public class CPNet {
 
 	private List<Vertex> adjList;
 	private int nVertex;
 	private int nEdges;
-	private boolean isCyclic;
 	private PartialOrderSolutionGraph p;
 	private List<Assignment> solutions = null;
 	
-	boolean getIsCyclic(){
-		return isCyclic;
-	}
 
 	PartialOrderSolutionGraph getPartialOrderSol(){
 		return p;
 	}
 	List<Vertex> indepList = new ArrayList<Vertex>();
-        private int MAX_ITERATION_LS=10000;
+        private static int MAX_ITERATION_LS=10000;
 
 	public CPNet(int nVertex, int nEdges) throws IllegalArgumentException {
 		/*
-		 * Il numero totale di archi può essere al massimo N * (N-1)
+		 * Il numero totale di archi puÃ² essere al massimo N * (N-1)
 		 */
 		if (nEdges > nVertex * (nVertex - 1)) {
-			throw new IllegalArgumentException("Il numero di archi non è appropriato rispetto al numero di vertici inseriti.");
+			throw new IllegalArgumentException("Il numero di archi non Ã¨ appropriato rispetto al numero di vertici inseriti.");
 		}
 		this.nVertex = nVertex;
 		this.nEdges = nEdges;
@@ -61,6 +50,29 @@ public class CPNet {
 			this.adjList.add(new Vertex(v));
 		}
 	}
+        
+        public CPNet(){
+            this.nEdges=0;
+            this.nVertex=0;
+            this.adjList=new ArrayList<>();
+        }
+        
+        public void setNEdges(int n){
+            this.nEdges=n;
+        }
+        
+        public void setNVertex(int n){
+            this.nVertex=n;
+        }
+        
+        public void addVertex(int i){
+            this.adjList.add(new Vertex(i));
+        }
+        
+        public void addEdge(int startVertex,int endVertex){
+            this.adjList.get(startVertex).addChild(endVertex);
+            this.adjList.get(endVertex).addParent(startVertex);
+        }
 
 	public List<Vertex> getAdjList() {
 		return adjList;
@@ -80,7 +92,7 @@ public class CPNet {
 			Integer startVertex = Integer.valueOf(randomizer.nextInt(this.nVertex));
 			Integer endVertex = Integer.valueOf(randomizer.nextInt(this.nVertex));
 			/*
-			 * Se i due nodi sono diversi e l'arco non esiste già, allora lo
+			 * Se i due nodi sono diversi e l'arco non esiste giÃ , allora lo
 			 * inserisco
 			 */
 			if (!startVertex.equals(endVertex) && !this.adjList.get(startVertex).isParentOf(endVertex)) {
@@ -108,7 +120,7 @@ public class CPNet {
 	}
 
 	/*
-	 * toString di test, si può modificare
+	 * toString di test, si puÃ² modificare
 	 */
 	@Override
 	public String toString() {
@@ -153,7 +165,6 @@ public class CPNet {
 			}
 			i++;
 		}
-		isCyclic = existedge;
 		return existedge;
 	}
 
@@ -162,7 +173,7 @@ public class CPNet {
 		setIndepList();
 		for (Vertex v : indepList) {
 			Variable var = ListUtils.getVariable(vars, v.getID().toString());
-			// v � una variabile indipendente
+			// v ï¿½ una variabile indipendente
 			// v ha una sola preferenza
 			Preference p = v.getPreferences().get(0);
 
@@ -287,7 +298,7 @@ public class CPNet {
 		for (Vertex v : getAdjList()) {
 
 			// System.out.println("vertice: " + v.getID());
-			// la var che sto considerando � la tesi del vincolo.
+			// la var che sto considerando ï¿½ la tesi del vincolo.
 			// con isAffirmedValue la tesi vale 1, altrimenti vale 0
 			// le ipotesi sono il binary value
 
@@ -444,7 +455,7 @@ public class CPNet {
             Collections.shuffle(randomarray, new Random(seed));
             boolean betterfound=false;
             int i=0;
-            while(!betterfound && i<randomarray.size()){
+            while(!betterfound && randomarray.size()>0){
                 int posdifferent=randomarray.remove(randomarray.size()-1);
                 Vertex v=this.adjList.get(posdifferent);
                 List<Integer> parents=v.getParents();
@@ -483,17 +494,61 @@ public class CPNet {
                 i++;
             }
             if(bestfound){
-                System.out.println("SOLUZIONE OTTIMA TROVATA "+i);
+                System.out.println("SOLUZIONE OTTIMA TROVATA IN "+i+" PASSI");
             }
             else{
-                System.out.println("SOLUZIONE NON OTTIMA TROVATA"+i);
+                System.out.println("SOLUZIONE NON OTTIMA TROVATA IN "+i+" PASSI");
             }
             return solution;
         }
         
+        private static CPNet createTest1(){
+            CPNet c=new CPNet();
+            c.setNEdges(4);
+            c.setNVertex(3);
+            for(int i=0;i<3;i++){
+                c.addVertex(i);
+            }
+            c.addEdge(0, 1);
+            c.addEdge(0, 2);
+            c.addEdge(2, 1);
+            c.addEdge(2, 0);
+            c.adjList.get(0).addPreference(0, 0, false);
+            c.adjList.get(0).addPreference(0, 1, true);
+            c.adjList.get(1).addPreference(1, 0, true);
+            c.adjList.get(1).addPreference(1, 1, false);
+            c.adjList.get(1).addPreference(1, 2, false);
+            c.adjList.get(1).addPreference(1, 3, true);
+            c.adjList.get(2).addPreference(2, 0, true);
+            c.adjList.get(2).addPreference(2, 1, false);
+            return c;
+        }
+        
+        private static CPNet createTest2(){
+            CPNet c=new CPNet();
+            c.setNEdges(4);
+            c.setNVertex(3);
+            for(int i=0;i<3;i++){
+                c.addVertex(i);
+            }
+            c.addEdge(1, 0);
+            c.addEdge(1, 2);
+            c.addEdge(2, 1);
+            c.addEdge(2, 0);
+            c.adjList.get(0).addPreference(0, 0, false);
+            c.adjList.get(0).addPreference(0, 1, true);
+            c.adjList.get(0).addPreference(0, 2, false);
+            c.adjList.get(0).addPreference(0, 3, true);
+            c.adjList.get(1).addPreference(1, 0, false);
+            c.adjList.get(1).addPreference(1, 1, true);
+            c.adjList.get(2).addPreference(2, 0, false);
+            c.adjList.get(2).addPreference(2, 1, true);
+            return c;
+        }
+        
 	private String setStrategyName(Inference strategy) {
 		String str = "";
-		if (!isCyclic)
+		if (!isCyclic())
 			str = "Sweep Forward";
 		else {
 			switch (strategy) {
@@ -516,8 +571,8 @@ public class CPNet {
 	public static void main(String[] args) {
 		//CPNet c = new CPNet(30, 15);
 		//CPNet c = new CPNet(4, 8);
-		CPNet c = new CPNet(3, 2);
-		CPNet cc = new CPNet(c);
+		//CPNet c = new CPNet(3, 2);
+                CPNet c = createTest1();
 		
 		Inference strategy = Inference.NONE;
 		long start = System.currentTimeMillis();
@@ -554,8 +609,8 @@ public class CPNet {
 		ViewGraph view = new ViewGraph(cp, list, 0, cp.setStrategyName(strategy));
 		view.setVisible(true); 
 		System.out.println(p.toString());*/
-		
-                
+		Instance s = c.solveWithLocalSearch();
+                System.out.println(s);
 	}
 
 	

@@ -36,6 +36,12 @@ public class Vertex {
             }
         }
         
+        public void addPreference(int idvertex, int r, boolean v){
+            Preference p = new Preference(idvertex, r);
+            p.setIsAffirmedVariable(v);
+            this.preferences.add(p);
+        }
+        
 	public Integer getID() {
 		return this.vertexID;
 	}
