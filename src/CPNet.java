@@ -428,13 +428,13 @@ public class CPNet {
 		return solutions;
 	}
 
-	public boolean generatePartialOrderSolution(Solution s){
-		if(s == null) return false;
-		else{
+	public boolean generatePartialOrderSolution(/*Solution s*/){
+		//if(s == null) return false;
+		//else{
 			p = new PartialOrderSolutionGraph(this);
-			p.setPartialOrderSolutions(s);
+			p.setPartialOrderSolutions(/*s*/);
 			return true;
-		}
+		//}
 	}
         private Instance generateRandomAssignment(){
             Instance ass=new Instance();

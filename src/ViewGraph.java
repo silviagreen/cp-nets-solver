@@ -45,7 +45,8 @@ public class ViewGraph extends JFrame {
        
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-            	_model.generatePartialOrderSolution(new Solution(_model.getSolutions().get(0).toValueString()));
+            	
+            	_model.generatePartialOrderSolution();
             	if (_model.getPartialOrderSol() != null) {
             		ViewGraph2 sols = new ViewGraph2(_model.getPartialOrderSol());
         			getContentPane().add(BorderLayout.CENTER, sols.getGraphComponent());

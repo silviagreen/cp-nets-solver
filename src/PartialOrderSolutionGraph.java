@@ -155,7 +155,10 @@ public class PartialOrderSolutionGraph {
 		return neighbours;
 	}
 	
-	public void setPartialOrderSolutions(Solution optimal){
+	public void setPartialOrderSolutions(/*Solution optimal*/){
+		String s = "";
+		for(int i = 0; i < nNodes ; i++) s += "0";
+		Solution optimal = new Solution(s);
 		DFSvisit(optimal);
 	}
 	
