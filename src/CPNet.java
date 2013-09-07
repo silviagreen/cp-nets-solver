@@ -836,18 +836,28 @@ public class CPNet {
 		}
 		
 		if(!err){
+		long start = 0, end = 0;
+		double time = 0.0;
+		
+		//sistemo parametri
 		Inference strategy = Inference.NONE;
 		if(args[0].equalsIgnoreCase(("Ac3"))) strategy = Inference.AC3;
 		else if(args[0].equalsIgnoreCase("fc")) strategy = Inference.FORWARD_CHECKING;
+		
 		CPNet c = new CPNet(Integer.valueOf(args[1]), Integer.valueOf(args[2]));
 		if(!args[0].equalsIgnoreCase("ls")){
-			
+			start = System.currentTimeMillis();
 			List<Assignment> list = c.getOptimalSolution(strategy, Boolean.valueOf(args[3]));
-			ViewGraph view = new ViewGraph(c, list, 0, c.setStrategyName(strategy));
+			end = System.currentTimeMillis();
+			time = ((end-start)/1000.0);
+			ViewGraph view = new ViewGraph(c, list, time, c.setStrategyName(strategy));
 			view.setVisible(true); }
 		else{
+			start = System.currentTimeMillis();
 			Instance s = c.solveWithLocalSearch();
-			ViewGraph view = new ViewGraph(c, s.fromInstanceToAssignment(c.getAdjList()), 0, "Local Search Approach");
+			end = System.currentTimeMillis();
+			time = ((end-start)/1000.0);
+			ViewGraph view = new ViewGraph(c, s.fromInstanceToAssignment(c.getAdjList()), time, "Local Search Approach");
 			view.setVisible(true);
 		}
 		}
