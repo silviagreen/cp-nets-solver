@@ -49,7 +49,7 @@ public class Assignment {
 	}
 
 	public boolean hasAssignmentFor(Variable var) {
-		System.out.println(variableToValue.get(var));
+		//System.out.println(variableToValue.get(var));
 		return variableToValue.get(var) != null;
 	}
 

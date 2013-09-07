@@ -1,0 +1,15 @@
+1) da console :
+java -jar CPNets.jar strategy nNodi nArchi findAll
+
+dove:
+	strategy = ls | fc | ac3 | none (è case insensitive)
+	nNodi = numero di nodi
+	nArchi = numero di archi
+	findAll = true | false 
+
+se findAll = true allora l'algoritmo di risoluzione cercherà tutte le possibili soluzioni ottime della cpnet, se è a false, si fermerà solo dopo aver trovato la prima soluzione ottima
+
+ls = Local Search Approach
+fc = Backtraking + forward checking
+ac3 = Backtraking + propagazione di vincoli (ac3)
+none = Backtraking

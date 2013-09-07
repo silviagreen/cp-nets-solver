@@ -1,10 +1,46 @@
 
 import java.util.ArrayList;
+import java.util.List;
+
+import csp.Assignment;
+import csp.Variable;
 
 
 public class Instance {
     private ArrayList<Boolean> _values=null;
-    public Instance(){
+    private int iter;
+    private boolean bestfound;
+    
+	public List<Assignment> fromInstanceToAssignment(List<Vertex> verts) {
+		List<Assignment> result = new ArrayList<Assignment>();
+		if (bestfound) {
+			Assignment a = new Assignment();
+			for (int i = 0; i < _values.size(); i++) {
+				int val = _values.get(i) ? 1 : 0;
+				a.setAssignment(new Variable(verts.get(i).getID().toString()), val);
+			}
+			result.add(a);
+		}
+		return result;
+	}
+    
+    public boolean isBestfound() {
+		return bestfound;
+	}
+
+	public void setBestfound(boolean bestfound) {
+		this.bestfound = bestfound;
+	}
+
+	public int getIter() {
+		return iter;
+	}
+    
+    public void setIter(int iter) {
+		this.iter = iter;
+	}
+
+	public Instance(){
         _values=new ArrayList<>();
     }
     

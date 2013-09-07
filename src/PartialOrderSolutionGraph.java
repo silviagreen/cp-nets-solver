@@ -44,14 +44,14 @@ public class PartialOrderSolutionGraph {
 	//TODO: DFS visit
 		
 	public boolean isBetterThan(Solution s1, Solution s2){//s1 è migliore di s2????
-		System.out.println(s1.getValue() + "e meglio di " +s2.getValue() +"????");
+		//System.out.println(s1.getValue() + "e meglio di " +s2.getValue() +"????");
 		int i = 1;
 		boolean found = false, result = false;
 		for(i = 0; !found && i < s1.getValue().length(); i++){
 			if( (s1.getValue()).charAt(i) != (s2.getValue()).charAt(i) ) found = true;
 		}
 		i--;
-		System.out.println("cambia in pos: "+i);
+		//System.out.println("cambia in pos: "+i);
 		Vertex v = cpnet.getAdjList().get(i);
 		if(v.getParents().isEmpty()){
 			result = (v.getPreferences().get(0).getIsAffirmedValue()) ? s1.getValue().charAt(i) == '1' : s1.getValue().charAt(i) == '0';
@@ -61,7 +61,7 @@ public class PartialOrderSolutionGraph {
 			String parentsPref = "";
 			
 			//System.out.println("i parents di " + v.getID() + "sono: ");
-			for(Integer ii : v.getParents()) System.out.println(ii.toString());
+			//for(Integer ii : v.getParents()) System.out.println(ii.toString());
 			
 //			for(int k = 1; k < s1.getValue().length();  k++){
 //				System.out.println("guardo se " + cpnet.getAdjList().get(k).getID().toString() + " e parent");
@@ -72,26 +72,26 @@ public class PartialOrderSolutionGraph {
 //		    }
 			
 			for(Integer k : v.getParents()){
-				System.out.println("parent "+k);
+				//System.out.println("parent "+k);
 				parentsPref += s1.getValue().charAt(k);
 			}
-			System.out.println("per " + v.getID() + " ottengo parentPref=" + parentsPref);
+			//System.out.println("per " + v.getID() + " ottengo parentPref=" + parentsPref);
 			
 			for(Preference p: v.getPreferences()){
-				System.out.println("preference considerata: " + p.toString());
+				//System.out.println("preference considerata: " + p.toString());
 				if(p.getBinaryValue() == ListUtils.fromBinToInt(parentsPref)){
-					System.out.println(p.getBinaryValue() + " è uguale a " + ListUtils.fromBinToInt(parentsPref));
+					//System.out.println(p.getBinaryValue() + " è uguale a " + ListUtils.fromBinToInt(parentsPref));
 					result = (p.getIsAffirmedValue()) ? s1.getValue().charAt(i) == '1' : s1.getValue().charAt(i) == '0';
-					System.out.println("trovata e i="+i);
-					System.out.println(s1.getValue().charAt(i) == '1');
-					System.out.println(s1.getValue().charAt(i) == '0');
-					System.out.println(result);
+					//System.out.println("trovata e i="+i);
+					//System.out.println(s1.getValue().charAt(i) == '1');
+					//System.out.println(s1.getValue().charAt(i) == '0');
+					//System.out.println(result);
 					
 				}
 					
 			}
 	}
-		System.out.println(result);
+		//System.out.println(result);
 	return result;	
 		
 	}
@@ -103,7 +103,7 @@ public class PartialOrderSolutionGraph {
 		return -1;
 	}
 	
-	public void DFSvisit(Solution s) {
+	public void DFSvisit(Solution s) {		
 		if (colors.get(s.getValue()) != Color.WHITE)
 			return;
 
@@ -116,11 +116,11 @@ public class PartialOrderSolutionGraph {
 				int index_n = getIndexByValue(neighbours.get(i));
 				if (!solutions.get(index_s).containSubSol(neighbours.get(i)) && !solutions.get(index_n).containSubSol(s.getValue()))
 					if (isBetterThan(s, new Solution(neighbours.get(i)))){
-						System.out.println(s.getValue() + " è meglio di " + neighbours.get(i));
+						//System.out.println(s.getValue() + " è meglio di " + neighbours.get(i));
 						solutions.get(index_s).addSubSol(new Solution(neighbours.get(i)));
 					}
 					else{
-						System.out.println(neighbours.get(i) + " è meglio di " + s.getValue());
+						//System.out.println(neighbours.get(i) + " è meglio di " + s.getValue());
 						solutions.get(index_n).addSubSol(s);
 						
 					}
@@ -159,7 +159,9 @@ public class PartialOrderSolutionGraph {
 		String s = "";
 		for(int i = 0; i < nNodes ; i++) s += "0";
 		Solution optimal = new Solution(s);
+		System.out.println("Generating Solution Partial Order...");
 		DFSvisit(optimal);
+		System.out.println("....done");
 	}
 	
 	@Override

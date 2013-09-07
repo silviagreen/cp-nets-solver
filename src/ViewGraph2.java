@@ -30,6 +30,7 @@ public class ViewGraph2 extends JPanel{
 
 	public ViewGraph2(PartialOrderSolutionGraph p) {
       
+		System.out.println("Generating Solution Partial Order Graph....");
         _model = p;
         final mxGraph graph = new mxGraph();
         graphComponent = new mxGraphComponent(graph);
@@ -50,9 +51,9 @@ public class ViewGraph2 extends JPanel{
                 indexes.put(v.getValue(), i);
                 i++;
             }
-            System.out.println("AGGIUNGO ARCHI");
+            //System.out.println("AGGIUNGO ARCHI");
             for(Solution v: vert){
-            	System.out.println("ARCHI X VERT " + v.getValue() + " con " + v.getSubSols().size());
+            	//System.out.println("ARCHI X VERT " + v.getValue() + " con " + v.getSubSols().size());
                 List<Solution> children=v.getSubSols();
                 for(Solution c: children){
                     graph.insertEdge(parent, null, "", viewvert.get(indexes.get(v.getValue())), viewvert.get(indexes.get(c.getValue())));
@@ -86,6 +87,7 @@ public class ViewGraph2 extends JPanel{
 
             morph.startAnimation();
         }
+        System.out.println("...done");
     }
 
 }

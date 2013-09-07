@@ -176,7 +176,7 @@ public class CPNet {
 	}
 
 	public Assignment solveAcyclicCPNet(Assignment result, List<Variable> vars) {
-
+		System.out.println("Solving Acyclic CPNet with Sweep Forward....");
 		setIndepList();
 		for (Vertex v : indepList) {
 			Variable var = ListUtils.getVariable(vars, v.getID().toString());
@@ -191,7 +191,7 @@ public class CPNet {
 
 		}
 
-		System.out.println(result);
+		//System.out.println(result);
 
 		List<Vertex> nonInped = ListUtils.subtract(adjList, indepList);
 		int index = 0;
@@ -206,7 +206,7 @@ public class CPNet {
 
 			for (Integer i : v.getParents()) {
 				Variable temp = ListUtils.getVariable(vars, i.toString());
-				System.out.println("cerco assegnamento per " + i.toString() + " in " + result + " : " + result.getAssignment(temp));
+				//System.out.println("cerco assegnamento per " + i.toString() + " in " + result + " : " + result.getAssignment(temp));
 				if (!result.hasAssignmentFor(temp)) {
 					// System.out.println("parent " + i.toString() +
 					// "non assegnato");
@@ -232,27 +232,30 @@ public class CPNet {
 						result.setAssignment(var, 0);
 						System.out.println(result);
 					}
-					System.out.println("rimuovo non indip " + nonInped.get(index) + "restano " + nonInped.size() + "parents");
+					//System.out.println("rimuovo non indip " + nonInped.get(index) + "restano " + nonInped.size() + "parents");
 					nonInped.remove(index);
 					index = 0;
 				}
 			}
 
 		}
-
+		System.out.println("...done");
 		return result;
 	}
 
 	private List<Variable> generateVariables() {
+		System.out.println("Generating Variables...");
 		List<Variable> variables = new ArrayList<Variable>();
 		for (Vertex v : getAdjList()) {
 			Variable var = new Variable(Integer.toString(v.getID()));
 			variables.add(var);
 		}
+		System.out.println("...done");
 		return variables;
 	}
 	
 	private void generateConstraint(Vertex v, List<Implies> constraints, List<Variable> variables, boolean affirmed){
+		
 		Variable var = ListUtils.getVariable(variables, String.valueOf(v.getID()));
 		List<Assignment> assignments = new ArrayList<Assignment>();
 		Assignment thesis1 = new Assignment();
@@ -291,16 +294,18 @@ public class CPNet {
 				}
 				assignments.add(a);
 
-				System.out.println("nell'ipotesi ci sono " + hp1.size() + " var d'ipotesi");
+				//System.out.println("nell'ipotesi ci sono " + hp1.size() + " var d'ipotesi");
 			}
 		}
 		if (!v.getParents().isEmpty() || (v.getParents().isEmpty() && affirmed && v.getPreferences().get(0).getIsAffirmedValue()) || (!v.getParents().isEmpty() || (v.getParents().isEmpty() && !affirmed && !v.getPreferences().get(0).getIsAffirmedValue()))) {
 			Implies i = new Implies(var, hp1, assignments);
 			constraints.add(i);
 		}
+		
 	}
 	
 	private List<Implies> generateConstraints(List<Variable> variables){
+		System.out.println("Generating Constraints....");
 		List<Implies> constraints = new ArrayList<Implies>();
 		for (Vertex v : getAdjList()) {
 
@@ -394,26 +399,30 @@ public class CPNet {
 		}
 			
 		
-		
+		System.out.println("...done");
 		return constraints;
 	}
 
 	public CpNetCSP generateCSP() {
+		System.out.println("Generating CSP from generated CPNet....");
 		List<Variable> variables = generateVariables();
 		List<Implies> constraints = generateConstraints(variables);
 		
 		CpNetCSP csp = new CpNetCSP(variables, constraints);
+		System.out.println("...done");
 		return csp;
 	}
 
 	public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll) {
 		List<Assignment> result = null;
 		if (isCyclic()) {
+			System.out.println("Solving Cyclic CPNet with " + setStrategyName(strategy) +"....");
 			CpNetCSP csp = generateCSP();
 			result = csp.solve(strategy, csp, true);
-
-			for (Constraint i : csp.getConstraints())
-				System.out.println(i);
+			if(result.isEmpty()) System.out.println("Nessuna soluzione ottima trovata");
+			System.out.println("....done");
+			//for (Constraint i : csp.getConstraints())
+				//System.out.println(i);
 		} else {
 			
 			List<Variable> variables = generateVariables();
@@ -487,6 +496,7 @@ public class CPNet {
         }
         
         public Instance solveWithLocalSearch(){
+        	System.out.println("Solving CPNet with Local Search Approach....");
             Instance solution=generateRandomAssignment();
             boolean bestfound=false;
             int i=0;
@@ -506,6 +516,9 @@ public class CPNet {
             else{
                 System.out.println("SOLUZIONE NON OTTIMA TROVATA IN "+i+" PASSI");
             }
+            System.out.println("....done");
+            solution.setBestfound(bestfound);
+            solution.setIter(i);
             return solution;
         }
         
@@ -575,6 +588,13 @@ public class CPNet {
 
 	}
 	
+    /**
+     * Genera il tempo medio di 10 iterazioni dove in ciascuna è creata una cp net ciclica con nNodi e nArchi, risolta con strategy
+     * i tempi di risoluzione di strategy e local search sono registrati, poi ne viene fatta la media
+     * @param strategy
+     * @param nNodi
+     * @param nArchi
+     */
 	public static void test1(Inference strategy, int nNodi, int nArchi) {
 		int k = 1;
 		List<Double> tempiMine = new ArrayList<Double>();
@@ -588,10 +608,10 @@ public class CPNet {
 				double timeCalc = ((end-start)/1000.0);
 				tempiMine.add(timeCalc);
 				
-				start = System.currentTimeMillis();
+				long start2 = System.currentTimeMillis();
 				Instance s = c.solveWithLocalSearch();
-				end = System.currentTimeMillis();
-				double timeCalcLS = ((end - start)/1000.0);
+				long end2 = System.currentTimeMillis();
+				double timeCalcLS = ((end2 - start2)/1000.0);
 				tempiLS.add(timeCalcLS);
 				k++;
 			}
@@ -608,7 +628,7 @@ public class CPNet {
 		double sumLS = 0.0;
 		for(Double d : tempiLS)
 			sumLS += d;
-		mediaMine = sumLS / ((double) tempiLS.size());
+		mediaLS = sumLS / ((double) tempiLS.size());
 		DecimalFormat df = new DecimalFormat("##.###");
 		
 		File file = new File("ciclico_"+nNodi+"_"+nArchi);
@@ -629,32 +649,293 @@ public class CPNet {
         System.out.println("Done");
 		
 	}
-        
-	public static void main(String[] args) {
-		CPNet.test1(Inference.NONE, 10, 5);
-		CPNet.test1(Inference.NONE, 10, 10);
-		CPNet.test1(Inference.NONE, 10, 15);
-		CPNet.test1(Inference.NONE, 10, 30);
-		System.out.println("END TEST");
+    /**
+     * Genera il tempo medio di 10 iterazioni dove in ciascuna è creata una cp net aciclica con nNodi e nArchi, 
+     * i tempi di risoluzione di sweep forward e local search sono registrati, poi ne viene fatta la media
+     * @param strategy
+     * @param nNodi
+     * @param nArchi
+     */
+	public static void test2(Inference strategy, int nNodi, int nArchi) {
+		int k = 1;
+		List<Double> tempiMine = new ArrayList<Double>();
+		List<Double> tempiLS = new ArrayList<Double>();
+		while(k<=10){
+			CPNet c = new CPNet(nNodi, nArchi);
+			if(!c.isCyclic()){
+				long start = System.currentTimeMillis();
+				List<Assignment> list = c.getOptimalSolution(strategy, true);
+				long end = System.currentTimeMillis();
+				double timeCalc = ((end-start)/1000.0);
+				tempiMine.add(timeCalc);
+				
+				long start2 = System.currentTimeMillis();
+				Instance s = c.solveWithLocalSearch();
+				long end2 = System.currentTimeMillis();
+				double timeCalcLS = ((end2 - start2)/1000.0);
+				tempiLS.add(timeCalcLS);
+				k++;
+			}
+		}
+		System.out.println("FATTE " + k + "SIMULAIZONI");
+		double mediaMine = 0.0;
+		double sum = 0.0;
 		
+		for(Double d : tempiMine)
+			sum += d;
+		mediaMine = sum / ((double) tempiMine.size());
+		
+		double mediaLS = 0.0;
+		double sumLS = 0.0;
+		for(Double d : tempiLS)
+			sumLS += d;
+		mediaLS = sumLS / ((double) tempiLS.size());
+		DecimalFormat df = new DecimalFormat("##.###");
+		
+		File file = new File("Aciclico_"+nNodi+"_"+nArchi);
+		try{
+		if(!file.exists()){
+			file.createNewFile();
+		
+		}
+		//true = append file
+		FileWriter fileWritter = new FileWriter(file.getName(),true);
+	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+	        bufferWritter.write(Double.toString(mediaMine)+", " +Double.toString(mediaLS) +"\n");
+	        bufferWritter.close();
+		
+		}catch(IOException e){
+			System.out.println("IOExc");
+		}
+        System.out.println("Done");
+		
+	}
+	/**
+	 * Crea una cp net ciclica, memorizza per ogni iterazione il numero di iterazioni con cui arriva alla soluzione ottima e poi ne fa la media
+	 * @param nNodi
+	 * @param nArchi
+	 */
+	public static void test3(int nNodi, int nArchi) {
+		int k = 1;
+		List<Integer> iters = new ArrayList<Integer>();
+		while(k<=10){
+			CPNet c = new CPNet(nNodi, nArchi);
+			if(c.isCyclic()){
+				//long start2 = System.currentTimeMillis();
+				Instance s = c.solveWithLocalSearch();
+				//long end2 = System.currentTimeMillis();
+				if(s.isBestfound()){
+					iters.add(s.getIter());
+					k++;}
+			}
+		}
+		System.out.println("FATTE " + k + "SIMULAIZONI");
+	
+		int sum = 0;
+		
+		for(Integer d : iters)
+			sum += d;
+		int media= sum / (iters.size());
+		
+		
+		File file = new File("ciclico_iter_"+nNodi+"_"+nArchi);
+		try{
+		if(!file.exists()){
+			file.createNewFile();
+		
+		}
+		//true = append file
+		FileWriter fileWritter = new FileWriter(file.getName(),true);
+	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+	        bufferWritter.write(Integer.toString(media));
+	        bufferWritter.close();
+		
+		}catch(IOException e){
+			System.out.println("IOExc");
+		}
+        System.out.println("Done");
+		
+	}
+	
+	/**
+	 * Crea una cp net aciclica, memorizza per ogni iterazione il numero di iterazioni con cui arriva alla soluzione ottima e poi ne fa la media
+	 * @param nNodi
+	 * @param nArchi
+	 */
+	public static void test4(int nNodi, int nArchi) {
+		int k = 1;
+		List<Integer> iters = new ArrayList<Integer>();
+		while(k<=10){
+			CPNet c = new CPNet(nNodi, nArchi);
+			if(!c.isCyclic()){
+				//long start2 = System.currentTimeMillis();
+				Instance s = c.solveWithLocalSearch();
+				//long end2 = System.currentTimeMillis();
+				if(s.isBestfound()){
+					iters.add(s.getIter());
+					k++;}
+			}
+		}
+		System.out.println("FATTE " + k + "SIMULAIZONI");
+	
+		int sum = 0;
+		
+		for(Integer d : iters)
+			sum += d;
+		int media= sum / (iters.size());
+		
+		
+		File file = new File("Aciclico_iter_"+nNodi+"_"+nArchi);
+		try{
+		if(!file.exists()){
+			file.createNewFile();
+		
+		}
+		//true = append file
+		FileWriter fileWritter = new FileWriter(file.getName(),true);
+	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+	        bufferWritter.write(Integer.toString(media));
+	        bufferWritter.close();
+		
+		}catch(IOException e){
+			System.out.println("IOExc");
+		}
+        System.out.println("Done");
+		
+	}
+	
+	public static void main(String[] args) {
+		/**
+		 * args[3] = true || false <- trovare tutte le soluzioni ottime????
+		 * args[2] = nArchi
+		 * args[1] = nNodi
+		 * args[0] = strategy = None || Ac3 || fc || ls
+		 * */
+		
+		boolean err = false;
+		
+		if(!args[0].equalsIgnoreCase("ac3") && !args[0].equalsIgnoreCase("fc") && !args[0].equalsIgnoreCase("none") && !args[0].equalsIgnoreCase("ls")){
+			System.err.println("Inserire il nome di un algoritmo tra \n -none ( = backtraking) \n -fc ( = backtraking + forward checking) \n -ac3 ( = backtraking + propagazione di vincoli) + \n -ls ( = local search approach)");
+			err = true;
+		}
+		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("true")){
+			System.err.println("Inserisci \"true\" se vuoi cercare tutte le soluzioni ottime, \"false\" altrimenti");
+			err=true;
+		}
+		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("true")){
+			System.err.println("Inserisci \"true\" se vuoi cercare tutte le soluzioni ottime, \"false\" altrimenti");
+			err=true;
+		}
+		if (!args[1].matches("-?\\d+(\\.\\d+)?")){
+			System.err.println("Inserire un numero valido di nodi");
+			err=true;
+		}
+		if (!args[2].matches("-?\\d+(\\.\\d+)?")){
+			System.err.println("Inserire un numero valido di archi");
+			err=true;
+		}
+		
+		if(!err){
+		Inference strategy = Inference.NONE;
+		if(args[0].equalsIgnoreCase(("Ac3"))) strategy = Inference.AC3;
+		else if(args[0].equalsIgnoreCase("fc")) strategy = Inference.FORWARD_CHECKING;
+		CPNet c = new CPNet(Integer.valueOf(args[1]), Integer.valueOf(args[2]));
+		if(!args[0].equalsIgnoreCase("ls")){
+			
+			List<Assignment> list = c.getOptimalSolution(strategy, Boolean.valueOf(args[3]));
+			ViewGraph view = new ViewGraph(c, list, 0, c.setStrategyName(strategy));
+			view.setVisible(true); }
+		else{
+			Instance s = c.solveWithLocalSearch();
+			ViewGraph view = new ViewGraph(c, s.fromInstanceToAssignment(c.getAdjList()), 0, "Local Search Approach");
+			view.setVisible(true);
+		}
+		}
+		
+		//TEST SU LOCAL SEARCH PER LE CICLICHE
+				//CPNet.test4( 10, 5);
+				//CPNet.test4( 10, 10);
+				//CPNet.test4( 10, 15);
+				//CPNet.test4( 10, 30);
+				//CPNet.test4( 10, 50);*/
+				
+				/*CPNet.test4(30, 5);
+				CPNet.test4(30, 10);
+				CPNet.test4(30, 15);
+				CPNet.test4(30, 30);
+				CPNet.test4(30, 50);*/
+				
+				/*CPNet.test4( 50, 5);
+				CPNet.test4( 50, 10);
+				CPNet.test4( 50, 15);
+				CPNet.test4( 50, 30);
+				CPNet.test4( 50, 50);*/
+		
+		//TEST SUI ALG PER LE ACICLICHE
+		//CPNet.test2(null, 10, 5);
+		//CPNet.test2(null, 10, 10);
+		//CPNet.test2(null, 10, 15);
+		//CPNet.test2(null, 10, 30);
+		//CPNet.test2(null, 10, 50);
+		
+		//CPNet.test2(null, 30, 5);
+		//CPNet.test2(null, 30, 10);
+		//CPNet.test2(null, 30, 15);
+		//CPNet.test2(null, 30, 30);
+		//CPNet.test2(null, 30, 50);
+		
+		//CPNet.test2(null, 50, 5);
+		//CPNet.test2(null, 50, 10);
+		//CPNet.test2(null, 50, 15);
+		//CPNet.test2(null, 50, 30);
+		//CPNet.test2(null, 50, 50);
+		
+		
+		//TEST SUI ALG PER LE CICLICHE-----------------------------------------
+		/*CPNet.test1(Inference.AC3, 10, 5);
+		CPNet.test1(Inference.AC3, 10, 10);
+		CPNet.test1(Inference.AC3, 10, 15);
+		CPNet.test1(Inference.AC3, 10, 30);
+		CPNet.test1(Inference.AC3, 10, 50);*/
+		
+		//CPNet.test1(Inference.AC3, 30, 5);
+		//CPNet.test1(Inference.AC3, 30, 10);
+		//CPNet.test1(Inference.AC3, 30, 15);
+		//CPNet.test1(Inference.AC3, 30, 30);
+		
+		//CPNet.test1(Inference.AC3, 30, 50);
+		
+	    /*CPNet.test1(Inference.AC3, 50, 5);
+		CPNet.test1(Inference.AC3, 50, 10);*/
+		//CPNet.test1(Inference.AC3, 50, 15);
+		//CPNet.test1(Inference.AC3, 50, 30);
+		
+		
+		
+		//System.out.println("END TEST");
+		
+//		CPNet c = createTest1();	
 //		//CPNet c = new CPNet(30, 15);
 //		CPNet c = new CPNet(10, 50);
 //		//CPNet c = new CPNet(3, 2);
 //               // CPNet c = createTest1();
 //		
-//		Inference strategy = Inference.NONE;
-//		long start = System.currentTimeMillis();
-//		List<Assignment> list = c.getOptimalSolution(strategy, true);
-//		long end = System.currentTimeMillis();
-//		double timeCalc = ((end-start)/1000.0);
-//		
-//		//print di test
-//		if (list.isEmpty())
-//			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
-//		for (Assignment a : list)
-//			System.out.println("SOL=" + a);
-//		//System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
-//		//System.out.println(c.p.toString());
+		/*Inference strategy = Inference.NONE;
+		long start = System.currentTimeMillis();
+		List<Assignment> list = c.getOptimalSolution(strategy, true);
+		long end = System.currentTimeMillis();
+		double timeCalc = ((end-start)/1000.0);
+		
+		//print di test
+		if (list.isEmpty())
+			System.out.println("NESSUNA SOLUZIONE  OTTIMA");
+		for (Assignment a : list)
+			System.out.println("SOL=" + a);
+		System.out.println("Tempo di calcolo: " + ((end-start)/1000.0) + " s");
+		//System.out.println(c.p.toString());
+		
+		ViewGraph view = new ViewGraph(c, list, 0, c.setStrategyName(strategy));
+		view.setVisible(true); */
 //                
 //                //Instance solution=cc.solveWithLocalSearch();
 //                //System.out.println(solution.toString());
@@ -679,6 +960,8 @@ public class CPNet {
 //		System.out.println(p.toString());*/
 //		Instance s = c.solveWithLocalSearch();
 //                System.out.println(s);
+		
+		
 	}
 
 	
