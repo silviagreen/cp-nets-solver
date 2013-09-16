@@ -1,9 +1,6 @@
 package csp;
 
-/**
- * A variable is a distinguishable object with a name.
- * @author Ruediger Lunde
- */
+
 public class Variable {
 	private String name;
 	

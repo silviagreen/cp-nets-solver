@@ -30,10 +30,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		isLCVHeuristicEnabled = state;
 	}
 
-	/**
-	 * Starts with a constraint propagation if AC-3 is enabled and then calls
-	 * the super class implementation.
-	 */
+
 	public List<Assignment> solve(CSP csp, boolean findAll) {
 		if (inferenceStrategy == Inference.AC3) {
 			System.out.println("AC3 selected");
@@ -47,9 +44,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		return super.solve(csp, findAll);
 	}
 
-	/**
-	 * Primitive operation, selecting a not yet assigned variable.
-	 */
+
 	@Override
 	protected Variable selectUnassignedVariable(CSP csp, Assignment assignment) {
 		switch (selectionStrategy) {
@@ -67,10 +62,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		return null;
 	}
 
-	/**
-	 * Primitive operation, ordering the domain values of the specified
-	 * variable.
-	 */
+
 	@Override
 	protected Iterable<?> orderDomainValues(Variable var,
 			Assignment assignment, CSP csp) {
@@ -81,15 +73,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		}
 	}
 
-	/**
-	 * Primitive operation, which tries to prune out values from the CSP which
-	 * are not possible anymore when extending the given assignment to a
-	 * solution.
-	 * 
-	 * @return An object which provides informations about (1) whether changes
-	 *         have been performed, (2) possibly inferred empty domains , and
-	 *         (3) how to restore the domains.
-	 */
+
 	@Override
 	protected DomainRestoreInfo inference(Variable var, Assignment assignment,
 			CSP csp) {
@@ -103,10 +87,8 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		}
 	}
 
-	// //////////////////////////////////////////////////////////////
-	// heuristics for selecting the next unassigned variable and domain ordering
 
-	/** Implements the minimum-remaining-values heuristic. */
+
 	private List<Variable> applyMRVHeuristic(CSP csp, Assignment assignment) {
 		List<Variable> result = new ArrayList<Variable>();
 		int mrv = Integer.MAX_VALUE;
@@ -125,7 +107,6 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		return result;
 	}
 
-	/** Implements the degree heuristic. */
 	private List<Variable> applyDegreeHeuristic(List<Variable> vars,
 			Assignment assignment, CSP csp) {
 		List<Variable> result = new ArrayList<Variable>();
@@ -149,7 +130,6 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		return result;
 	}
 
-	/** Implements the least constraining value heuristic. */
 	private List<Object> applyLeastConstrainingValueHeuristic(Variable var,
 			CSP csp) {
 		List<Pair<Object, Integer>> pairs = new ArrayList<Pair<Object, Integer>>();
@@ -190,7 +170,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 	// //////////////////////////////////////////////////////////////
 	// inference algorithms
 
-	/** Implements forward checking. */
+	/** forward checking. */
 	private DomainRestoreInfo doForwardChecking(Variable var, Assignment assignment, CSP csp) {
 		System.out.println("Forward checking su " + var.getName());
 		DomainRestoreInfo result = new DomainRestoreInfo();
@@ -229,8 +209,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 		return revised;
 	}
 
-	// //////////////////////////////////////////////////////////////
-	// two enumerations
+
 
 	public enum Selection {
 		DEFAULT_ORDER, MRV, MRV_DEG

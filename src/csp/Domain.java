@@ -8,15 +8,7 @@ import java.util.List;
 import sun.org.mozilla.javascript.internal.ObjArray;
 
 
-/**
- * A domain Di consists of a set of allowable values {v1, ... , vk} for
- * the corresponding variable Xi and defines a default order on those values.
- * This implementation guarantees, that domains are never changed after they
- * have been created. Domain reduction is implemented by replacement instead
- * of modification. So previous states can easily be restored.
- * 
- * @author Ruediger Lunde
- */
+
 public class Domain implements Iterable<Object> {
 	private static final long serialVersionUID = 1L;
 
@@ -69,7 +61,7 @@ public class Domain implements Iterable<Object> {
 		return new ArrayIterator<Object>(values);
 	}
 	
-	/** Not very efficient... */
+
 	public List<Object> asList() {
 		List<Object> result = new ArrayList<Object>();
 		for (Object value : values)

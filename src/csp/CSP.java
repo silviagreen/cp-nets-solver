@@ -4,17 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * Artificial Intelligence A Modern Approach (3rd Ed.): Section 6.1, Page 206. A
- * constraint satisfaction problem or CSP consists of three components, X,D, and
- * C:
- * <ul><li>X is a set of variables, {X1, ... ,Xn}.</li>
- *     <li>D is a set of domains, {D1, ... ,Dn}, one for each variable.</li>
- *     <li>C is a set of constraints that specify allowable combinations of
- *         values.</li></ul>
- * 
- * @author Ruediger Lunde
- */
+
 public class CSP {
 
 	private Variable[] variables;
@@ -22,12 +12,8 @@ public class CSP {
 	private List<Constraint> constraints;
 	public int index= 0;
 	
-	/** Lookup, which maps a variable to its index in the list of variables. */
 	private Hashtable<Variable, Integer> varIndexHash;
-	/**
-	 * Constraint network. Maps variables to those constraints in which they
-	 * participate.
-	 */
+	
 	private Hashtable<Variable, List<Constraint>> cnet;
 
 	private CSP() {
@@ -87,9 +73,7 @@ public class CSP {
 		return constraints;
 	}
 
-	/**
-	 * Returns all constraints in which the specified variable participates.
-	 */
+	
 	public List<Constraint> getConstraints(Variable var) {
 		return cnet.get(var);
 	}
@@ -100,11 +84,7 @@ public class CSP {
 			cnet.get(var).add(constraint);
 	}
 	
-	/**
-     * Returns for binary constraints the other variable from the scope.
-     * 
-     * @return a variable or null for non-binary constraints.
-     */
+
     public Variable getNeighbor(Variable var, Constraint constraint) {
             List<Variable> scope = constraint.getScope();
             if (scope.size() == 2) {

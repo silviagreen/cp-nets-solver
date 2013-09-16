@@ -3,14 +3,7 @@ package csp;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Base class for CSP solver implementations. Solving a CSP means finding an
- * assignment, which is consistent and complete with respect to a CSP. This
- * abstract class provides the central interface method and additionally an
- * implementation of an observer mechanism.
- * 
- * @author Ruediger Lunde
- */
+
 public abstract class SolutionStrategy {
 	List<CSPStateListener> listeners = new ArrayList<CSPStateListener>();
 

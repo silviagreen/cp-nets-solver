@@ -2,11 +2,7 @@ package csp;
 
 import java.util.Iterator;
 
-/**
- * Iterates efficiently through an array.
- * 
- * @author Ruediger Lunde
- */
+
 public class ArrayIterator<T> implements Iterator<T> {
 
 	T[] values;
