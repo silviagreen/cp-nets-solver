@@ -2,9 +2,8 @@
 \usepackage{lingmacros}
 \usepackage{tree-dvips}
 \usepackage[italian]{babel}
+\usepackage[utf8x]{inputenc}
 %\usepackage{frontespizio}
-
-
 
 \begin{document}
 \tableofcontents
@@ -12,10 +11,11 @@
 \newpage
 
 \section{Introduzione}
-
-
+In questo documento verranno presentati gli argomenti trattati per lo svolgimento del progetto di Sistemi con Vincoli, realizzato dagli studenti Rango Massimiliano, Segato Silvia e Tesselli Riccardo.\\Il progetto di interesse riguarda lo sviluppo di un risolutore automatico di CP-Nets sia acicliche che cicliche che adotta varie strategie di risoluzione.\\In questo documento verrà prima introdotto il problema iniziale, successivamente verranno presentate le fasi di lavoro svolte e descritte le nostre soluzioni al problema. Infine saranno visualizzati e analizzati i risultati ottenuti.
 
 \section{Presentazione del problema}
+Una CP-Net è una struttura che rappresenta reti di preferenze condizionali. Più formalmente una CP-Net sulle variabili $V = \{X_{1},\dots, X_{n}\}$ è un grafo orientato sui nodi $X_{1},\dots, X_{n}$, ogni nodo $X_{i} \in V$ è annotato con una tabella di preferenze condizionali $CPT(X_{i})$. Ogni tabella di preferenze condizionali $CPT(X_{i})$ associa un ordine totale $\succ^{i}_{\textbf{u}}$ con ogni instanziazione \textbf{u} dei genitori di $X_{i}$ detti $Pa(X_{i}) = U$. Una CP-Net si dice aciclica se il grafo che rappresenta non contiene cicli, altrimenti è detta ciclica.\\
+Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con due diversi approcci.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
 
 
 \section{Fasi di sviluppo}
