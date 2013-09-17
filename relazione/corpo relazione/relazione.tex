@@ -4,6 +4,7 @@
 \usepackage[italian]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{amssymb}
+\usepackage{graphicx}
 %\usepackage{frontespizio}
 
 \begin{document}
@@ -16,12 +17,16 @@ In questo documento verranno presentati gli argomenti trattati per lo svolgiment
 
 \section{Presentazione del problema}
 Una CP-Net è una struttura che rappresenta reti di preferenze condizionali. Più formalmente una CP-Net sulle variabili $V = \{X_{1},\dots, X_{n}\}$ è un grafo orientato sui nodi $X_{1},\dots, X_{n}$, ogni nodo $X_{i} \in V$ è annotato con una tabella di preferenze condizionali $CPT(X_{i})$. Ogni tabella di preferenze condizionali $CPT(X_{i})$ associa un ordine totale $\succ^{i}_{\textbf{u}}$ con ogni instanziazione \textbf{u} dei genitori di $X_{i}$ detti $Pa(X_{i}) = U$. Una CP-Net si dice aciclica se il grafo che rappresenta non contiene cicli, altrimenti è detta ciclica.\\
-Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con due diversi approcci.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
+Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con due diversi approcci. Il linguaggio di programmazione adottato è Java.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
 
 
 \section{Fasi di sviluppo}
 
 \subsection{Generazione Casuale di CPNets}
+In primo luogo è stato sviluppato un codice per la generazione di CP-Nets casuali a partire da alcuni parametri scelti dall'utente, al fine di poter studiare il comportamento delle varie strategie di risoluzione al variare della struttura della CP-Net.\\
+Il software genera una CP-Net in maniera casuale con numero di nodi e numero di archi fissati dall'utente. Per ogni nodo si generano le preferenze casualmente, supponendo che ogni nodo possa assumere due valori (negato o affermato), le preferenze generate garantiscono che il numero di condizioni per cui si preferisce il valore negato corrisponda al numero di condizioni per cui si preferisce il valore affermato, ovvero siano equamente distribuite.\\
+Per la creazione l'algoritmo in primo luogo genera un grafo con il numero di nodi fissato dall'utente, ad ogni nodo viene assegnato un nome che corrisponde al numero cardinale del momento di creazione; successivamente estrae casualmente due nodi del grafo, uno di inizio e uno di fine, se dal nodo di inizio al nodo di fine non esiste già un arco orientato tra essi allora ne inserisce uno. Si continua a inserire archi fintanto che il numero di archi non corrisponde al parametro inserito dall'utente.\\
+Come si può notare l'algoritmo di creazione di CP-Nets casuali può generare indistintamente reti cicliche o acicliche. Per distinguere la ciclicità di una CP-Net è stato sviluppato un algoritmo che controlla l'esistenza di cicli dato un grafo orientato.
 \subsection{Studio dei paper} 
 
 sicuri che questa serva????
@@ -39,6 +44,28 @@ Per costruire il grafo vero e proprio, viene richiamato il metodo \texttt{public
 \section{Consultivo finale}
 
 \section{Appendice: Istruzioni d'uso}
-
+Il software viene fornito sotto forma di JAR eseguibile. Per lanciare l'esecuzione bisogna eseguire da console il comando
+\begin{verbatim}
+java -jar CPNets.jar <strategy> <nNodi> <nArchi> <findAll>
+\end{verbatim}
+dove \texttt{<strategy>}, \texttt{<nNodi>}, \texttt{<nArchi>}, \texttt{<findAll>} sono i parametri.\\
+Il parametro \texttt{<strategy>} definisce con quale strategia si vogliono individuare le soluzioni della CP-Net, i valori ammessi sono:
+\begin{itemize}
+\item  \texttt{ls} : Local Search;
+\item  \texttt{fc} : Backtracking + Forward Checking;
+\item  \texttt{ac3} : Backtracking + consistenza d'arco;
+\item  \texttt{none} : Backtracking.
+\end{itemize}
+I parametri \texttt{<nNodi>}, \texttt{<nArchi>} definiscono rispettivamente il numero di nodi e archi della CP-Net da generare.\\
+Infine il parametro \texttt{<findAll>} è un parametro booleano, se è \texttt{true} allora l'algoritmo di risoluzione individuerà l'ordinamento parziale di tutte le soluzioni del problema, se altrimenti è \texttt{false} verrà individuata solo quella ottima. Questo parametro viene utilizzato solo nel caso di strategie che richiedono backtracking, non si applica alla strategia Local Search.\\
+Una volta lanciato il comando comparirà una interfaccia grafica come visualizzato in figura \ref{fig:1}.\\
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{../img/screen.png}
+\caption{Esempio di schermata}\label{fig:1}
+\end{figure}
+Nel riquadro più a sinistra viene visualizzata la struttura della CP-Net; nel pannello a destra viene mostrata la ciclicità della rete e le tabelle di preferenze condizionali di ogni variabile. Si assume che data una variabile $X$ i valori per tale variabile sono $x$ per i valori affermati e $!x$ per i valori negati.\\
+Nel pannello centrale viene visualizzato il grafo che rappresenta l'ordinamento parziale di tutte le soluzioni della CP-Net. Ogni nodo del grafo rappresenta una instanziazione dei valori delle variabili. Una instaziazione è intesa come un assegnamento ordinato di valori 0, per valori negati, e 1 per valori affermati. L'ordine di assegnazione è determinato in senso crescente, ovvero il primo valore si riferisce alla variabile 0 e così via fino all'ultima variabile. Se una instanziazione $A$ è migliore di una instanziazione $B$ allora compare un arco orientato da $A$ a $B$ nel grafo. Per visualizzare l'ordinamento parziale delle soluzioni è necessario che il parametro \texttt{<findAll>} sia \texttt{true} e cliccare sul menù a tendina in alto a sinistra.\\
+Nel pannello inferiore viene visualizzato un riassunto della strategia utilizzata, della soluzione ottima individuata e del tempo di calcolo richiesto.
 
 \end{document}
