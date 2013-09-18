@@ -1,76 +1,33 @@
 package csp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
 
 
 
 public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
-	protected Selection selectionStrategy = Selection.DEFAULT_ORDER;
 	protected Inference inferenceStrategy = Inference.NONE;
-	protected boolean isLCVHeuristicEnabled;
 
-	/** Selects the algorithm for SELECT-UNASSIGNED-VARIABLE */
-	public void setVariableSelection(Selection sStrategy) {
-		selectionStrategy = sStrategy;
-	}
+
 
 	/** Selects the algorithm for INFERENCE. */
 	public void setInference(Inference iStrategy) {
 		inferenceStrategy = iStrategy;
 	}
 
-	/**
-	 * Selects the least constraining value heuristic as implementation for
-	 * ORDER-DOMAIN-VALUES.
-	 */
-	public void enableLCV(boolean state) {
-		isLCVHeuristicEnabled = state;
-	}
-
+	
 
 	public List<Assignment> solve(CSP csp, boolean findAll) {
 		if (inferenceStrategy == Inference.AC3) {
 			System.out.println("AC3 selected");
 			DomainRestoreInfo info = new AC3Strategy().reduceDomains(csp);
 			if (!info.isEmpty()) {
-				fireStateChanged(csp);
+				//fireStateChanged(csp);
 				if (info.isEmptyDomainFound())
 					return null;
 			}
 		}
 		return super.solve(csp, findAll);
-	}
-
-
-	@Override
-	protected Variable selectUnassignedVariable(CSP csp, Assignment assignment) {
-		switch (selectionStrategy) {
-		case MRV:
-			return applyMRVHeuristic(csp, assignment).get(0);
-		case MRV_DEG:
-			List<Variable> vars = applyMRVHeuristic(csp, assignment);
-			return applyDegreeHeuristic(vars, assignment, csp).get(0);
-		default:
-			for (Variable var : csp.getVariables()) {
-				if (!(assignment.hasAssignmentFor(var)))
-					return var;
-			}
-		}
-		return null;
-	}
-
-
-	@Override
-	protected Iterable<?> orderDomainValues(Variable var,
-			Assignment assignment, CSP csp) {
-		if (!isLCVHeuristicEnabled) {
-			return csp.getDomain(var);
-		} else {
-			return applyLeastConstrainingValueHeuristic(var, csp);
-		}
 	}
 
 
@@ -89,83 +46,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 
 
 
-	private List<Variable> applyMRVHeuristic(CSP csp, Assignment assignment) {
-		List<Variable> result = new ArrayList<Variable>();
-		int mrv = Integer.MAX_VALUE;
-		for (Variable var : csp.getVariables()) {
-			if (!assignment.hasAssignmentFor(var)) {
-				int num = csp.getDomain(var).size();
-				if (num <= mrv) {
-					if (num < mrv) {
-						result.clear();
-						mrv = num;
-					}
-					result.add(var);
-				}
-			}
-		}
-		return result;
-	}
 
-	private List<Variable> applyDegreeHeuristic(List<Variable> vars,
-			Assignment assignment, CSP csp) {
-		List<Variable> result = new ArrayList<Variable>();
-		int maxDegree = Integer.MIN_VALUE;
-		for (Variable var : vars) {
-			int degree = 0;
-			for (Constraint constraint : csp.getConstraints(var)) {
-				Variable neighbor = csp.getNeighbor(var, constraint);
-				if (!assignment.hasAssignmentFor(neighbor)
-						&& csp.getDomain(neighbor).size() > 1)
-					++degree;
-			}
-			if (degree >= maxDegree) {
-				if (degree > maxDegree) {
-					result.clear();
-					maxDegree = degree;
-				}
-				result.add(var);
-			}
-		}
-		return result;
-	}
-
-	private List<Object> applyLeastConstrainingValueHeuristic(Variable var,
-			CSP csp) {
-		List<Pair<Object, Integer>> pairs = new ArrayList<Pair<Object, Integer>>();
-		for (Object value : csp.getDomain(var)) {
-			int num = countLostValues(var, value, csp);
-			pairs.add(new Pair<Object, Integer>(value, num));
-		}
-		Collections.sort(pairs, new Comparator<Pair<Object, Integer>>() {
-			@Override
-			public int compare(Pair<Object, Integer> o1,
-					Pair<Object, Integer> o2) {
-				return o1.getSecond() < o2.getSecond() ? -1
-						: o1.getSecond() > o2.getSecond() ? 1 : 0;
-			}
-		});
-		List<Object> result = new ArrayList<Object>();
-		for (Pair<Object, Integer> pair : pairs)
-			result.add(pair.getFirst());
-		return result;
-	}
-
-	private int countLostValues(Variable var, Object value, CSP csp) {
-		int result = 0;
-		Assignment assignment = new Assignment();
-		assignment.setAssignment(var, value);
-		for (Constraint constraint : csp.getConstraints(var)) {
-			Variable neighbor = csp.getNeighbor(var, constraint);
-			for (Object nValue : csp.getDomain(neighbor)) {
-				assignment.setAssignment(neighbor, nValue);
-				if (!constraint.isSatisfiedWith(assignment)) {
-					++result;
-				}
-			}
-		}
-		return result;
-	}
 
 	// //////////////////////////////////////////////////////////////
 	// inference algorithms
@@ -211,9 +92,7 @@ public class ImprovedBacktrackingStrategy extends BacktrackingStrategy {
 
 
 
-	public enum Selection {
-		DEFAULT_ORDER, MRV, MRV_DEG
-	}
+
 
 	public enum Inference {
 		NONE, FORWARD_CHECKING, AC3

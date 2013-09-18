@@ -34,9 +34,20 @@ sicuri che questa serva????
 \input{csp.tex}
 \subsection{Creazione dell'ordinamento parziale delle soluzioni}
 
-Per poter ottenere l'ordinamento parziale delle soluzioni, occorre eseguire il metodo \texttt{public boolean generatePartialOrderSolution()}.
-Tale metodo si occupa di creare un oggetto \texttt{PartialOrderSolutionGraph}, che rappresenta il grafo delle soluzioni. In particolare,  l'oggetto contiene una lista di oggetti \texttt{Solution}, ognuno dei quali contiene, oltre al valore della soluzione stessa che, per brevità, è una stringa (ad esempio, in una CPnet che ha, nell'ordine, A, B, C come variabili, un oggetto \texttt{Solution} ha come valore ''111", che p da intendersi come l'equivalente di {A=1, B=1, C=1}), anche la lista dei valori di quelle soluzioni che sono sotto di lei nell'ordinamento (da ora in avavnti queste verranno chiamate ''sottoliste").
-Per costruire il grafo vero e proprio, viene richiamato il metodo \texttt{public void setPartialOrderSolutions()}, che si occupa di settare le sottoliste di ciascuna soluzione. In questo modo, il grafo viene memorizzato come una lista di adiacenze.
+Per poter ottenere l'ordinamento parziale delle soluzioni, occorre eseguire il metodo
+\\
+\centerline{\texttt{public boolean generatePartialOrderSolution()}}
+\\
+
+Tale metodo si occupa di creare un oggetto \texttt{PartialOrderSolutionGraph}, che rappresenta il grafo delle soluzioni. In particolare,  l'oggetto contiene una lista di oggetti \texttt{Solution}, ognuno dei quali contiene, oltre al valore della soluzione stessa che, per brevità, è una stringa (ad esempio, in una CPnet che ha, nell'ordine, A, B, C come variabili, un oggetto \texttt{Solution} ha come valore ``111'', che è da intendersi come l'equivalente di {A=1, B=1, C=1}), anche la lista dei valori di quelle soluzioni che sono sotto di lei nell'ordinamento (da ora in avanti queste verranno chiamate ``sottoliste'').
+Per costruire il grafo vero e proprio, viene richiamato il metodo 
+\\
+\centerline{\texttt{public void setPartialOrderSolutions()}}
+\\
+
+Esso si occupa di settare le sottoliste di ciascuna 
+soluzione. In questo modo, il grafo viene memorizzato come una lista di adiacenze.
+
 \subsection{Implementazione soluzione con local search}
 
 \section{Risultati e statistiche}
