@@ -1,43 +1,58 @@
 \subsection{Descrizione algoritmo}
-I primi algoritmi implementati per trovare le soluzioni ottime di CPnet sono quelli appresi e messi in pratica a lezione.
+I primi algoritmi implementati per trovare le soluzioni ottime di CP-nets sono quelli appresi e messi in pratica a lezione.
 
 \subsubsection{Algoritmo per CPnet acicliche: Sweep Forward}
-L'algoritmo implementato per trovare l'unica soluzione ottima di una CPnet aciclica è denominato Sweep Forward e consiste nel seguire le dipendenze del grafo. In particolare, consiste nell'assegnare il valore ''preferito" ad ogni variabile nel contesto degli assegnamenti fatti per i genitori.
+L'algoritmo implementato per trovare l'unica soluzione ottima di una CP-net aciclica è denominato Sweep Forward e consiste nel seguire le dipendenze del grafo. In particolare, consiste nell'assegnare il valore ``preferito'' ad ogni variabile nel contesto degli assegnamenti fatti per i genitori.
 
 \subsubsection{Algoritmo per CPnet cicliche}
-Data una CPnet ciclica, per trovare le sue soluzioni ottime si è creato un insieme di vincoli P tale che le soluzioni di P coincidono con l'insieme delle soluzioni ottime della CPnet. Tale insieme P lo si riesce a  trovare in tempo polinomiale.
+Data una CP-net ciclica, per trovare le sue soluzioni ottime si deve ricavare un insieme di vincoli P, tale che le soluzioni di P coincidono con l'insieme delle soluzioni ottime della CP-net. Tale insieme P lo si riesce a  trovare in tempo polinomiale.
 
 \subsection{Implementazione}
-Il metodo che si occupa di trovare le soluzioni ottime della CPNet generata è \texttt{public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll)}. Tale metodo adotta le due strategie descritte sopra in base alla ciclicità o meno della CPNet.
-Ongli soluzione ottima della CPNet è stata implementata come assegnamento (oggetto di tipo \texttt{Assignment}); un assegnamento è una mappa <variabile, valore>.
+Il metodo che si occupa di trovare le soluzioni ottime della CP-net generata è il seguente
+\\
+\\
+\centerline{\texttt{public List<Assignment> getOptimalSolution(Inference strategy, boolean findAll)}}
+\\
+
+ Tale metodo adotta le due strategie descritte sopra in base all'essere ciclica o meno della CP-net data.
+Ogni soluzione ottima della CPNet è stata implementata come assegnamento (oggetto di tipo \texttt{Assignment}); un assegnamento è una mappa $\langle$variabile, valore$\rangle$ .
 
 \subsubsection{CPnet acicliche: Sweep Forward}
 L'algoritmo è stato implementato come metodo della classe \texttt{CPNet}:\\
-\texttt{public Assignment solveAcyclicCPNet(Assignment result, List<Variable> vars)}
 \\
-La soluzione ottima è in questo caso corrisponde alla variabile \texttt{result}.
+\centerline{\texttt{public Assignment solveAcyclicCPNet(Assignment result, List<Variable> vars)}}
+\\
+
+La soluzione ottima in questo caso corrisponde alla variabile \texttt{result}.
 Per ciascuna variabile indipendente, viene settato in \texttt{result} il relativo assegnamento con il valore preferito.
-Dopo ciò si controllano le variabili non indipendenti, precedentemente inserite un una lista; per ciascuna di queste, si controlla se i suoi genitori hanno già un valore assegnato nell'assegnamento finale \texttt{result}. Se così è, allora in base all'assegnamento dei genitori si sceglie il valore preferito per la variabile in esame e lo si usa per settare l'assegnamento di quest'ultima in \texttt{result}. Fatto ciò si toglie la variabile dalla lista e si ricomincia l'analisi con le rimanenti variabili. Qualora la variabile in esame non avesse ancora tutti una configurazione completa per i suoi genitori, la si lascia nella lista e si prosegue con la successiva.
+Dopo ciò si controllano le variabili non indipendenti, precedentemente inserite un una lista; per ciascuna di queste, si controlla se i suoi genitori hanno già un valore assegnato in \texttt{result}. Se così è, allora in base all'assegnamento dei genitori si sceglie il valore preferito per la variabile in esame e lo si usa per settare l'assegnamento di quest'ultima in \texttt{result}. Fatto ciò si toglie la variabile dalla lista e si ricomincia l'analisi con le rimanenti variabili. Qualora la variabile in esame non avesse ancora una configurazione completa per tutti i suoi genitori, la si lascia nella lista e si prosegue con la successiva.
 
 \subsubsection{CPnet cicliche: da CPnet a CSP}
 Al fine di poter attuare la strategia descritta sopra, il primo passo da effettuare è la conversione da CPNet a CSP. 
 \\
-Il CSP che si vengono a creare consistono di variabili binarie, ciascuna delle quali ha come dominio {0,1}, e un insieme di vincoli.
-A livello implementativo, ciò corrisponde alla creazione della classe \texttt{CSP} e \texttt{Variable}, nonchè dell'interfaccia \texttt{Constraint}.
+I CSPs che si vengono a creare consistono di variabili, ciascuna delle quali ha come dominio {0,1}, e un insieme di vincoli.
+A livello implementativo, ciò corrisponde alla creazione della classe \texttt{CSP} e \texttt{Variable}, nonché dell'interfaccia \texttt{Constraint}.
  
 I vincoli rispettano il seguente pattern:
 \\
-ipotesi $\rightarrow$ tesi
+\centerline{ipotesi $\rightarrow$ tesi}
 
 Tesi e ipotesi si compongono di assegnamenti. La tesi contiene l'assegnamento di un unica variabile, l'ipotesi contiene disgiunzioni di congiunzioni di assegnamenti (ad esempio, la seguente può essere una ipotesi: $( (A=1 \land B=1) \lor (A=0 \land B=0))$ ). 
 
 Tale tipo di vincolo è stato implementato con la creazione della classe \texttt{Implies}, che implementa \texttt{Constraint}.
 
 
-La classe \texttt{CPNetCSP} si occupa di creare un CSP di questo tipo, dopo aver opportunamente creato le variabili a partire dai vertici del grafo (tramite il metodo \texttt{private List<Variable> generateVariables()}) e i vincoli a partire dalle preferenze (tramite il metodo \texttt{private List<Implies> generateConstraints(List<Variable> variables)}).
+La classe \texttt{CPNetCSP} si occupa di creare un CSP di questo tipo, dopo aver opportunamente creato le variabili a partire dai vertici del grafo, tramite il metodo
+\\
+\centerline{\texttt{private List<Variable> generateVariables()}}
+\\
+e i vincoli a partire dalle preferenze,tramite il metodo
+\\
+\centerline{\texttt{private List<Implies> generateConstraints(List<Variable> variables)}}
+\\
 
 Per trovare le soluzioni del CSP così creato è stata utilizzata la classe astratta\texttt{SolvingStrategy} e la sua sottoclasse \texttt{BacktrakingStrategy}. Come dice il nome stesso, tale classe si occupa di implementare la strategia di risoluzione di un CSP attraverso la ricerca con Backtraking. L'algoritmo implementato è in grado di trovare tutte le soluzioni ottime del CSP datogli in input. Tuttavia, l'utente finale può scegliere se lasciare che l'algoritmo trovi tutte le soluzioni o si fermi alla prima soluzione.
 
-L'utente è anche in grado di scegliere se eseguire l'algoritmo di backtraking ''di base", o se con Forward Checking o con propagazione di vincoli. Per permettere ciò, si è utilizzata una sottoclasse di \texttt{BacktrakingStrategy}, denominata \texttt{ImprovedBacktrakingStrategy}, e una nuova classe, \texttt{AC3Strategy}, che si occupa della propagazione di vincoli.
+L'utente è anche in grado di scegliere se eseguire l'algoritmo di Backtraking ``di base'', o se con Forward Checking o con propagazione di vincoli (AC3). Per permettere ciò, si è utilizzata una sottoclasse di \texttt{BacktrakingStrategy}, denominata \texttt{ImprovedBacktrakingStrategy}, e una nuova classe, \texttt{AC3Strategy}, che si occupa della propagazione di vincoli.
 
 
