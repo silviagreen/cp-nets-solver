@@ -15,31 +15,27 @@
 \section{Introduzione}
 In questo documento verranno presentati gli argomenti trattati per lo svolgimento del progetto di Sistemi con Vincoli, realizzato dagli studenti Rango Massimiliano, Segato Silvia e Tesselli Riccardo.\\Il progetto di interesse riguarda lo sviluppo di un risolutore automatico di CP-Nets sia acicliche che cicliche che adotta varie strategie di risoluzione.\\In questo documento verrà prima introdotto il problema iniziale, successivamente verranno presentate le fasi di lavoro svolte e descritte le nostre soluzioni al problema. Infine saranno visualizzati e analizzati i risultati ottenuti.
 
-\section{Presentazione del problema}
+\section{Presentazione del Problema}
 Una CP-Net è una struttura che rappresenta reti di preferenze condizionali. Più formalmente una CP-Net sulle variabili $V = \{X_{1},\dots, X_{n}\}$ è un grafo orientato sui nodi $X_{1},\dots, X_{n}$, ogni nodo $X_{i} \in V$ è annotato con una tabella di preferenze condizionali $CPT(X_{i})$. Ogni tabella di preferenze condizionali $CPT(X_{i})$ associa un ordine totale $\succ^{i}_{\textbf{u}}$ con ogni instanziazione \textbf{u} dei genitori di $X_{i}$ detti $Pa(X_{i}) = U$. Una CP-Net si dice aciclica se il grafo che rappresenta non contiene cicli, altrimenti è detta ciclica.\\
 Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con diversi approcci. Il linguaggio di programmazione adottato è Java.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
 
 
-\section{Fasi di sviluppo}
+\section{Fasi di Sviluppo}
 
 \subsection{Generazione Casuale di CPNets}
 In primo luogo è stato sviluppato un codice per la generazione di CP-Nets casuali a partire da alcuni parametri scelti dall'utente, al fine di poter studiare il comportamento delle varie strategie di risoluzione al variare della struttura della CP-Net.\\
 Il software genera una CP-Net in maniera casuale con numero di nodi e numero di archi fissati dall'utente. Per ogni nodo si generano le preferenze casualmente, supponendo che ogni nodo possa assumere due valori (negato o affermato), le preferenze generate garantiscono che il numero di condizioni per cui si preferisce il valore negato corrisponda al numero di condizioni per cui si preferisce il valore affermato, ovvero siano equamente distribuite.\\
 Per la creazione l'algoritmo in primo luogo genera un grafo con il numero di nodi fissato dall'utente, ad ogni nodo viene assegnato un nome che corrisponde al numero cardinale del momento di creazione; successivamente estrae casualmente due nodi del grafo, uno di inizio e uno di fine, se dal nodo di inizio al nodo di fine non esiste già un arco orientato tra essi allora ne inserisce uno. Si continua a inserire archi fintanto che il numero di archi non corrisponde al parametro inserito dall'utente.\\
 Come si può notare l'algoritmo di creazione di CP-Nets casuali può generare indistintamente reti cicliche o acicliche. Per distinguere la ciclicità di una CP-Net è stato sviluppato un algoritmo che controlla l'esistenza di cicli dato un grafo orientato.
-\subsection{Studio dei paper} 
-
-sicuri che questa serva????
-\subsection{Implementazione algoritmi appresi}
 \input{csp.tex}
-\subsection{Creazione dell'ordinamento parziale delle soluzioni}
+\subsection{Ordinamento Parziale delle Soluzioni}
 
 Per poter ottenere l'ordinamento parziale delle soluzioni, occorre eseguire il metodo
 \\
 \centerline{\texttt{public boolean generatePartialOrderSolution()}}
 \\
 
-Tale metodo si occupa di creare un oggetto \texttt{PartialOrderSolutionGraph}, che rappresenta il grafo delle soluzioni. In particolare,  l'oggetto contiene una lista di oggetti \texttt{Solution}, ognuno dei quali contiene, oltre al valore della soluzione stessa che, per brevità, è una stringa (ad esempio, in una CPnet che ha, nell'ordine, A, B, C come variabili, un oggetto \texttt{Solution} ha come valore ``111'', che è da intendersi come l'equivalente di {A=1, B=1, C=1}), anche la lista dei valori di quelle soluzioni che sono sotto di lei nell'ordinamento (da ora in avanti queste verranno chiamate ``sottoliste'').
+Tale metodo si occupa di creare un oggetto \texttt{PartialOrderSolutionGraph}, che rappresenta il grafo delle soluzioni. In particolare,  l'oggetto contiene una lista di oggetti \texttt{Solution}, ognuno dei quali contiene, oltre al valore della soluzione stessa che, per brevità, è una stringa (ad esempio, in una CP-Net che ha, nell'ordine, A, B, C come variabili, un oggetto \texttt{Solution} ha come valore ``111'', che è da intendersi come l'equivalente di {A=1, B=1, C=1}), anche la lista dei valori di quelle soluzioni che sono sotto di lei nell'ordinamento (da ora in avanti queste verranno chiamate ``sottoliste'').
 Per costruire il grafo vero e proprio, viene richiamato il metodo 
 \\
 \centerline{\texttt{public void setPartialOrderSolutions()}}
@@ -48,14 +44,14 @@ Per costruire il grafo vero e proprio, viene richiamato il metodo
 Esso si occupa di settare le sottoliste di ciascuna 
 soluzione. In questo modo, il grafo viene memorizzato come una lista di adiacenze.
 
-\subsection{Implementazione soluzione con local search}
+\subsection{Strategia con Local Search}
 
 
-\section{Risultati e statistiche}
+\section{Risultati e Statistiche}
 
-\section{Consultivo finale}
+\section{Consultivo Finale}
 
-\section{Appendice: Istruzioni d'uso}
+\section{Appendice: Istruzioni d'Uso}
 Il software viene fornito sotto forma di JAR eseguibile. Per lanciare l'esecuzione bisogna eseguire da console il comando
 \begin{verbatim}
 java -jar CPNets.jar <strategy> <nNodi> <nArchi> <findAll>
@@ -69,7 +65,7 @@ Il parametro \texttt{<strategy>} definisce con quale strategia si vogliono indiv
 \item  \texttt{none} : Backtracking.
 \end{itemize}
 I parametri \texttt{<nNodi>}, \texttt{<nArchi>} definiscono rispettivamente il numero di nodi e archi della CP-Net da generare.\\
-Infine il parametro \texttt{<findAll>} è un parametro booleano, se è \texttt{true} allora l'algoritmo di risoluzione individuerà l'ordinamento parziale di tutte le soluzioni del problema, se altrimenti è \texttt{false} verrà individuata solo quella ottima. Questo parametro viene utilizzato solo nel caso di strategie che richiedono backtracking, non si applica alla strategia Local Search.\\
+Infine il parametro \texttt{<findAll>} è un parametro booleano, se è \texttt{true} allora l'algoritmo di risoluzione individuerà tutte le soluzioni ottime del problema, se altrimenti è \texttt{false} verrà individuata solo la prima ottima individuata. Questo parametro viene utilizzato solo nel caso di strategie che richiedono backtracking, non si applica alla strategia Local Search.\\
 Una volta lanciato il comando comparirà una interfaccia grafica come visualizzato in figura \ref{fig:1}.\\
 \begin{figure}
 \centering
@@ -77,7 +73,7 @@ Una volta lanciato il comando comparirà una interfaccia grafica come visualizza
 \caption{Esempio di schermata}\label{fig:1}
 \end{figure}
 Nel riquadro a sinistra viene visualizzata la struttura della CP-Net; nel pannello a destra viene mostrata la ciclicità della rete e le tabelle di preferenze condizionali di ogni variabile. Si assume che data una variabile $X$ i valori per tale variabile sono $x$ per i valori affermati e $!x$ per i valori negati.\\
-Nel pannello centrale viene visualizzato il grafo che rappresenta l'ordinamento parziale di tutte le soluzioni della CP-Net. Ogni nodo del grafo rappresenta una instanziazione dei valori delle variabili. Una instaziazione è intesa come un assegnamento ordinato di valori 0, per valori negati, e 1 per valori affermati. L'ordine di assegnazione è determinato in senso crescente, ovvero il primo valore si riferisce alla variabile 0 e così via fino all'ultima variabile. Se una instanziazione $A$ è migliore di una instanziazione $B$ allora compare un arco orientato da $A$ a $B$ nel grafo. Per visualizzare l'ordinamento parziale delle soluzioni è necessario che il parametro \texttt{<findAll>} sia \texttt{true} e cliccare sul menù a tendina in alto a sinistra.\\
+Nel pannello centrale viene visualizzato il grafo che rappresenta l'ordinamento parziale di tutte le soluzioni della CP-Net. Ogni nodo del grafo rappresenta una instanziazione dei valori delle variabili. Una instaziazione è intesa come un assegnamento ordinato di valori 0, per valori negati, e 1 per valori affermati. L'ordine di assegnazione è determinato in senso crescente, ovvero il primo valore si riferisce alla variabile 0 e così via fino all'ultima variabile. Se una instanziazione $A$ è migliore di una instanziazione $B$ allora compare un arco orientato da $A$ a $B$ nel grafo. Per visualizzare l'ordinamento parziale delle soluzioni è necessario cliccare sul menù a tendina in alto a sinistra.\\
 Nel pannello inferiore viene visualizzato un riassunto della strategia utilizzata, della soluzione ottima individuata e del tempo di calcolo richiesto.
 
 \end{document}
