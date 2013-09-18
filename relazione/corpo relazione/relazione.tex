@@ -17,7 +17,7 @@ In questo documento verranno presentati gli argomenti trattati per lo svolgiment
 
 \section{Presentazione del problema}
 Una CP-Net è una struttura che rappresenta reti di preferenze condizionali. Più formalmente una CP-Net sulle variabili $V = \{X_{1},\dots, X_{n}\}$ è un grafo orientato sui nodi $X_{1},\dots, X_{n}$, ogni nodo $X_{i} \in V$ è annotato con una tabella di preferenze condizionali $CPT(X_{i})$. Ogni tabella di preferenze condizionali $CPT(X_{i})$ associa un ordine totale $\succ^{i}_{\textbf{u}}$ con ogni instanziazione \textbf{u} dei genitori di $X_{i}$ detti $Pa(X_{i}) = U$. Una CP-Net si dice aciclica se il grafo che rappresenta non contiene cicli, altrimenti è detta ciclica.\\
-Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con due diversi approcci. Il linguaggio di programmazione adottato è Java.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
+Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di una CP-Net aciclica o ciclica, e individuare l'ordinamento parziale delle sue soluzioni. La ricerca delle soluzioni ottime è stata affrontata con diversi approcci. Il linguaggio di programmazione adottato è Java.\\Nella sessione successiva verranno presentate le varie fasi di lavoro.
 
 
 \section{Fasi di sviluppo}
@@ -38,6 +38,7 @@ Per poter ottenere l'ordinamento parziale delle soluzioni, occorre eseguire il m
 Tale metodo si occupa di creare un oggetto \texttt{PartialOrderSolutionGraph}, che rappresenta il grafo delle soluzioni. In particolare,  l'oggetto contiene una lista di oggetti \texttt{Solution}, ognuno dei quali contiene, oltre al valore della soluzione stessa che, per brevità, è una stringa (ad esempio, in una CPnet che ha, nell'ordine, A, B, C come variabili, un oggetto \texttt{Solution} ha come valore ''111", che p da intendersi come l'equivalente di {A=1, B=1, C=1}), anche la lista dei valori di quelle soluzioni che sono sotto di lei nell'ordinamento (da ora in avavnti queste verranno chiamate ''sottoliste").
 Per costruire il grafo vero e proprio, viene richiamato il metodo \texttt{public void setPartialOrderSolutions()}, che si occupa di settare le sottoliste di ciascuna soluzione. In questo modo, il grafo viene memorizzato come una lista di adiacenze.
 \subsection{Implementazione soluzione con local search}
+
 
 \section{Risultati e statistiche}
 
@@ -64,7 +65,7 @@ Una volta lanciato il comando comparirà una interfaccia grafica come visualizza
 \includegraphics[scale=0.5]{../img/screen.png}
 \caption{Esempio di schermata}\label{fig:1}
 \end{figure}
-Nel riquadro più a sinistra viene visualizzata la struttura della CP-Net; nel pannello a destra viene mostrata la ciclicità della rete e le tabelle di preferenze condizionali di ogni variabile. Si assume che data una variabile $X$ i valori per tale variabile sono $x$ per i valori affermati e $!x$ per i valori negati.\\
+Nel riquadro a sinistra viene visualizzata la struttura della CP-Net; nel pannello a destra viene mostrata la ciclicità della rete e le tabelle di preferenze condizionali di ogni variabile. Si assume che data una variabile $X$ i valori per tale variabile sono $x$ per i valori affermati e $!x$ per i valori negati.\\
 Nel pannello centrale viene visualizzato il grafo che rappresenta l'ordinamento parziale di tutte le soluzioni della CP-Net. Ogni nodo del grafo rappresenta una instanziazione dei valori delle variabili. Una instaziazione è intesa come un assegnamento ordinato di valori 0, per valori negati, e 1 per valori affermati. L'ordine di assegnazione è determinato in senso crescente, ovvero il primo valore si riferisce alla variabile 0 e così via fino all'ultima variabile. Se una instanziazione $A$ è migliore di una instanziazione $B$ allora compare un arco orientato da $A$ a $B$ nel grafo. Per visualizzare l'ordinamento parziale delle soluzioni è necessario che il parametro \texttt{<findAll>} sia \texttt{true} e cliccare sul menù a tendina in alto a sinistra.\\
 Nel pannello inferiore viene visualizzato un riassunto della strategia utilizzata, della soluzione ottima individuata e del tempo di calcolo richiesto.
 
