@@ -11,9 +11,8 @@
 \tableofcontents
 
 \newpage
-
 \section{Introduzione}
-In questo documento verranno presentati gli argomenti trattati per lo svolgimento del progetto di Sistemi con Vincoli, realizzato dagli studenti Rango Massimiliano, Segato Silvia e Tesselli Riccardo.\\Il progetto di interesse riguarda lo sviluppo di un risolutore automatico di CP-Nets sia acicliche che cicliche che adotta varie strategie di risoluzione.\\In questo documento verrà prima introdotto il problema iniziale, successivamente verranno presentate le fasi di lavoro svolte e descritte le nostre soluzioni al problema. Infine saranno visualizzati e analizzati i risultati ottenuti.
+In questo documento verranno presentati gli argomenti trattati per lo svolgimento del progetto di Sistemi con Vincoli, realizzato dagli studenti Rango Massimiliano, Segato Silvia e Tesselli Riccardo.\\Il progetto di interesse riguarda lo sviluppo di un risolutore automatico di CP-Nets sia acicliche che cicliche che adotta varie strategie di risoluzione.\\In questo documento verrà prima introdotto il problema iniziale, successivamente verranno presentate le fasi di lavoro svolte e descritte le nostre soluzioni al problema. Saranno poi visualizzati e analizzati i risultati ottenuti e infine presentato il consuntivo delle ore di lavoro e le istruzioni d'uso del software realizzato.
 
 \section{Presentazione del Problema}
 Una CP-Net è una struttura che rappresenta reti di preferenze condizionali. Più formalmente una CP-Net sulle variabili $V = \{X_{1},\dots, X_{n}\}$ è un grafo orientato sui nodi $X_{1},\dots, X_{n}$, ogni nodo $X_{i} \in V$ è annotato con una tabella di preferenze condizionali $CPT(X_{i})$. Ogni tabella di preferenze condizionali $CPT(X_{i})$ associa un ordine totale $\succ^{i}_{\textbf{u}}$ con ogni instanziazione \textbf{u} dei genitori di $X_{i}$ detti $Pa(X_{i}) = U$. Una CP-Net si dice aciclica se il grafo che rappresenta non contiene cicli, altrimenti è detta ciclica.\\
@@ -26,7 +25,7 @@ Nel problema dato si vogliono individuare le soluzioni ottime, se esistono, di u
 In primo luogo è stato sviluppato un codice per la generazione di CP-Nets casuali a partire da alcuni parametri scelti dall'utente, al fine di poter studiare il comportamento delle varie strategie di risoluzione al variare della struttura della CP-Net.\\
 Il software genera una CP-Net in maniera casuale con numero di nodi e numero di archi fissati dall'utente. Per ogni nodo si generano le preferenze casualmente, supponendo che ogni nodo possa assumere due valori (negato o affermato), le preferenze generate garantiscono che il numero di condizioni per cui si preferisce il valore negato corrisponda al numero di condizioni per cui si preferisce il valore affermato, ovvero siano equamente distribuite.\\
 Per la creazione l'algoritmo in primo luogo genera un grafo con il numero di nodi fissato dall'utente, ad ogni nodo viene assegnato un nome che corrisponde al numero cardinale del momento di creazione; successivamente estrae casualmente due nodi del grafo, uno di inizio e uno di fine, se dal nodo di inizio al nodo di fine non esiste già un arco orientato tra essi allora ne inserisce uno. Si continua a inserire archi fintanto che il numero di archi non corrisponde al parametro inserito dall'utente.\\
-Come si può notare l'algoritmo di creazione di CP-Nets casuali può generare indistintamente reti cicliche o acicliche. Per distinguere la ciclicità di una CP-Net è stato sviluppato un algoritmo che controlla l'esistenza di cicli dato un grafo orientato.
+Come si può notare l'algoritmo di creazione di CP-Nets casuali può generare indistintamente reti cicliche o acicliche. Per distinguere la ciclicità di una CP-Net è stato sviluppato un algoritmo che controlla l'esistenza di cicli in un grafo orientato.
 \input{csp.tex}
 \subsection{Ordinamento Parziale delle Soluzioni}
 
@@ -52,8 +51,91 @@ Ora che è stata introdotta la terminologia possiamo presentare il funzionamento
 
 
 \section{Risultati e Statistiche}
-
+In questa sezione vengono descritti i test effettuati sul sistema e presentati i risultati ottenuti. I test intendono mostrare il tempo di risoluzione medio delle varie strategie implementate al variare della dimensione della CP-Net. Di seguito vengono prima presentati i test effettuati su CP-Net acicliche e successivamente su quelle cicliche; successivamente verranno mostrati alcuni risultati sul comportamento della strategia Local Search.
+\subsection{Test su CP-Net Acicliche}
+Per la risoluzione di CP-Net acicliche sono state implementate le strategie Sweep Forward e Local Search. Il primo test svolto mostra come varia il tempo di risoluzione medio delle due strategie al crescere del numero di archi, con numero di nodi fissato. Le medie si basano su 10 prove. Nelle Figure \ref{fig:test1}, \ref{fig:test2}, \ref{fig:test3} vengono visualizzati i risultati ottenuti variando il numero di archi su una CP-Net con rispettivamente 10, 30 e 50 nodi. La precisione di misura è al millesimo di secondo.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{../img/10NodiAciclica.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net aciclica con 10 nodi}\label{fig:test1}
+\end{figure}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{../img/30NodiAciclica.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net aciclica con 30 nodi}\label{fig:test2}
+\end{figure}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{../img/50NodiAciclica.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net aciclica con 50 nodi}\label{fig:test3}
+\end{figure}
+\\\'E possibile osservare i diversi comportamenti delle due strategie. Sweep Forward cresce linearmente al crescere del numero di archi, mentre Local Search sembra essere pressoché costante, sebbene vi sia un lieve aumento nel tempo di risoluzione. Sotto queste condizioni l'approccio Local Search dà buoni risultati, in quanto è meno sensibile all'aumento di dimensione della CP-Net e garantisce di individuare l'ottimo globale in un numero modesto di iterazioni.\\
+Per completezza in Figura \ref{fig:test8} vengono mostrati i risultati al variare del numero di nodi fissando il numero di archi.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.8]{../img/15ArchiAciclica.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di nodi su CP-Net aciclica con 15 archi}\label{fig:test8}
+\end{figure}
+\\\'E possibile osservare un comportamento analogo a quello precedentemente descritto.
+\subsection{Test su CP-Net Cicliche}
+Per la risoluzione di CP-Net cicliche sono state realizzate le seguenti strategie: ricerca con Backtracking, Backtracking con Forward Checking, Backtracking con propagazione vincoli d'arco e Local Search.\\
+Il test effettuato intende mostrare il tempo di risoluzione medio al crescere del numero di archi di una CP-Net dato un numero di nodi fissato. Le medie si basano su 10 prove. Nelle Figure \ref{fig:test4}, \ref{fig:test5}, \ref{fig:test6} vengono visualizzati i risultati ottenuti variando il numero di archi su una CP-Net con rispettivamente 10, 30 e 50 nodi. La precisione di misura è al millesimo di secondo.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/10NodiCicliche.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net ciclica con 50 nodi}\label{fig:test4}
+\end{figure}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/30NodiCicliche.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net ciclica con 50 nodi}\label{fig:test5}
+\end{figure}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/50NodiCicliche.png}
+\caption{Tempo di risoluzione (s) al crescere del numero di archi su CP-Net ciclica con 50 nodi}\label{fig:test6}
+\end{figure}
+\\Nel caso di CP-Net cicliche osserviamo dai dati una crescita di tempo esponenziale all'aumentare del numero di archi. In particolar modo questo è evidente in Figura \ref{fig:test6} dove non è stato possibile effettuare i test per 50 archi in quanto il tempo di esecuzione era al di fuori della nostra portata. Si nota inoltre come l'approccio Local Search mantenga gli stessi standard che abbiamo visto in precedenza, sebbene in questo caso ci sia da fare una precisazione. I dati raccolti per la strategia Local Search nel caso di CP-Net cicliche si riferiscono esclusivamente ai casi in cui la CP-Net abbia almeno una soluzione globalmente ottima. Nel caso ciò non si verificasse l'algoritmo Local Search non è in grado di individuare la soluzione globalmente ottima, saturando quindi il numero di iterazioni massime consentito.\\
+Alla luce di ciò notiamo come Local Search sia ancora una valida strategia per l'individuazione della soluzione ottima, ma purtroppo, nella maggior parte dei casi di CP-Net cicliche, ciò non accade, e bisogna ricorrere alle strategie convenzionali, sebbene il tempo di esecuzione cresca esponenzialmente. Per argomentare ulteriormente questa tesi viene presentata in Figura \ref{fig:test7} l'aumento esponenziale del tempo all'aumentare della complessità della CP-Net. Sono state considerate CP-Net che rappresentano grafi completi K5, K7 e K10.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/TempoK.png}
+\caption{Tempo di risoluzione (s) su grafi completi}\label{fig:test7}
+\end{figure}
+\\Si può facilmente notare la crescita esponenziale di queste strategie al crescere della complessità.
+\subsection{Test su Local Search}
+Sono stati effettuati test più specifici per la strategia Local Search al fine di studiare come varia il numero di iterazioni per la ricerca della soluzione ottima al variare della struttura della CP-Net.\\
+In Figura \ref{fig:test9} viene mostrato il numero di iterazioni effettuate per individuare la soluzione ottima al crescere del numero di archi per tre serie di CP-Net acicliche da 10, 30 e 50 nodi.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/IterazioniAciclica.png}
+\caption{Numero iterazioni di ricerca locale al crescere del numero di archi su CP-Nets acicliche}\label{fig:test9}
+\end{figure}
+\\Per la serie da 10 nodi non è stato possibile ottenere dati per numero di archi oltre 15 in quanto era difficoltoso ottenere grafi aciclici con tali parametri.\\
+Analogamente in Figura \ref{fig:test10} vengono mostrate le stesse statistiche descritte in precedenza su CP-Net cicliche.
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.75]{../img/IterazioniCicliche.png}
+\caption{Numero iterazioni di ricerca locale al crescere del numero di archi su CP-Nets cicliche}\label{fig:test10}
+\end{figure}
+\\Si osserva una correlazione lineare tra il numero di iterazioni e il numero di archi, inoltre si osserva che all'aumentare del numero dei nodi i risultati ottenuti variano per una costante, sia nel caso di CP-Net acicliche che cicliche.
+\subsection{Conclusioni}
+Dai risultati ottenuti si può affermare che per CP-Nets acicliche la strategia Local Search si rivela estremamente efficace. Tale efficacia si riscontra anche nel caso di CP-Nets cicliche che presentano almeno una soluzione globalmente ottima. Nel caso peggiore tale strategia è inutile e quindi è necessario ricorrere alle strategie con ricerca tradizionale. Tali strategie sono esponenzialmente correlate alla complessità della CP-Net, inoltre la presenza di strategie di supporto alla ricerca con Backtracking (Forward Checking e propagazione dei vincoli d'arco) sembrano non influire eccessivamente sui tempi di esecuzione.
 \section{Consultivo Finale}
+In questa sezione viene presentato il consuntivo delle ore di lavoro effettuate. Il carico di lavoro è stato equamente diviso tra i tre membri sui vari aspetti del progetto, pertanto viene presentato il carico di ore medio per un membro del gruppo.
+\begin{itemize}
+\item Documentazione e ricerca dei materiali di lavoro: 2 ore;
+\item Implementazione generazione casuale CP-Net: 2 ore;
+\item Sviluppo front-end di visualizzazione: 2 ore;
+\item Implementazione strategie di base: 5 ore;
+\item Implementazione strategie Local Search: 4 ore;
+\item Test e debug: 3 ore;
+\item Raccolta statistiche: 3 ore;
+\item Stesura relazione: 3 ore;
+\item Realizzazione presentazione: 1 ora;
+\item \textbf{Totale}: 25 ore a persona.
+\end{itemize}
+
 
 \section{Appendice: Istruzioni d'Uso}
 Il software viene fornito sotto forma di JAR eseguibile. Per lanciare l'esecuzione bisogna eseguire da console il comando
@@ -69,8 +151,8 @@ Il parametro \texttt{<strategy>} definisce con quale strategia si vogliono indiv
 \item  \texttt{none} : Backtracking.
 \end{itemize}
 I parametri \texttt{<nNodi>}, \texttt{<nArchi>} definiscono rispettivamente il numero di nodi e archi della CP-Net da generare.\\
-Infine il parametro \texttt{<findAll>} è un parametro booleano, se è \texttt{true} allora l'algoritmo di risoluzione individuerà tutte le soluzioni ottime del problema, se altrimenti è \texttt{false} verrà individuata solo la prima ottima individuata. Questo parametro viene utilizzato solo nel caso di strategie che richiedono backtracking, non si applica alla strategia Local Search.\\
-Una volta lanciato il comando comparirà una interfaccia grafica come visualizzato in figura \ref{fig:1}.\\
+Infine il parametro \texttt{<findAll>} è un parametro booleano, se è \texttt{true} allora l'algoritmo di risoluzione individuerà tutte le soluzioni ottime del problema, se altrimenti è \texttt{false} verrà individuata solo la prima ottima individuata. Questo parametro viene utilizzato solo nel caso di strategie che richiedono Backtracking, non si applica alla strategia Local Search.\\
+Una volta lanciato il comando comparirà una interfaccia grafica come visualizzato in Figura \ref{fig:1}.\\
 \begin{figure}
 \centering
 \includegraphics[scale=0.5]{../img/screen.png}

@@ -1,10 +1,10 @@
 \subsection{Strategie di Base}
 I primi algoritmi implementati per trovare le soluzioni ottime di CP-Nets sono quelli appresi e messi in pratica a lezione.
 
-\subsubsection{Algoritmo per CP-Nets acicliche: Sweep Forward}
+\subsubsection{Algoritmo per CP-Nets Acicliche: Sweep Forward}
 L'algoritmo implementato per trovare l'unica soluzione ottima di una CP-Net aciclica è denominato Sweep Forward e consiste nel seguire le dipendenze del grafo. In particolare, consiste nell'assegnare il valore ``preferito'' ad ogni variabile nel contesto degli assegnamenti fatti per i genitori.
 
-\subsubsection{Algoritmo per CP-Nets cicliche}
+\subsubsection{Algoritmo per CP-Nets Cicliche}
 Data una CP-Net ciclica, per trovare le sue soluzioni ottime si deve ricavare un insieme di vincoli $P$, tale che le soluzioni di $P$ coincidono con l'insieme delle soluzioni ottime della CP-Net. Tale insieme $P$ lo si riesce a  trovare in tempo polinomiale.
 
 \subsubsection{Implementazione}
@@ -24,6 +24,7 @@ L'algoritmo Sweep Forward per CP-Nets acicliche è stato implementato come metod
 La soluzione ottima in questo caso corrisponde alla variabile \texttt{result}.
 Per ciascuna variabile indipendente, viene settato in \texttt{result} il relativo assegnamento con il valore preferito.
 Dopo ciò si controllano le variabili non indipendenti, precedentemente inserite in una lista; per ciascuna di queste, si controlla se i suoi genitori hanno già un valore assegnato in \texttt{result}. Se così è, allora in base all'assegnamento dei genitori si sceglie il valore preferito per la variabile in esame e lo si usa per settare l'assegnamento di quest'ultima in \texttt{result}. Fatto ciò si toglie la variabile dalla lista e si ricomincia l'analisi con le rimanenti variabili. Qualora la variabile in esame non avesse ancora una configurazione completa per tutti i suoi genitori, la si lascia nella lista e si prosegue con la successiva.
+\\
 \\
 Al fine di poter attuare la strategia di risoluzione per CP-Nets cicliche, il primo passo da effettuare è la conversione da CP-Net a CSP. 
 \\
