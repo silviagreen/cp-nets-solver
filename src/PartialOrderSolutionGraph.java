@@ -44,7 +44,7 @@ public class PartialOrderSolutionGraph {
 	//TODO: DFS visit
 		
 	public boolean isBetterThan(Solution s1, Solution s2){//s1 e' migliore di s2????
-		//System.out.println(s1.getValue() + "e meglio di " +s2.getValue() +"????");
+		
 		int i = 1;
 		boolean found = false, result = false;
 		for(i = 0; !found && i < s1.getValue().length(); i++){
@@ -56,7 +56,7 @@ public class PartialOrderSolutionGraph {
 		if(v.getParents().isEmpty()){
 			result = (v.getPreferences().get(0).getIsAffirmedValue()) ? s1.getValue().charAt(i) == '1' : s1.getValue().charAt(i) == '0';
 		}
-		else{
+		else{ System.out.println("----------------" + s1.getValue() + "e meglio di " +s2.getValue() +"????");
 			//controlla preferenza padre
 			String parentsPref = "";
 			
@@ -75,17 +75,18 @@ public class PartialOrderSolutionGraph {
 				//System.out.println("parent "+k);
 				parentsPref += s1.getValue().charAt(k);
 			}
-			//System.out.println("per " + v.getID() + " ottengo parentPref=" + parentsPref);
+			System.out.println("per " + v.getID() + " ottengo parentPref=" + parentsPref);
 			
 			for(Preference p: v.getPreferences()){
 				//System.out.println("preference considerata: " + p.toString());
 				if(p.getBinaryValue() == ListUtils.fromBinToInt(parentsPref)){
 					//System.out.println(p.getBinaryValue() + " e' uguale a " + ListUtils.fromBinToInt(parentsPref));
+					System.out.println(p.toString());
 					result = (p.getIsAffirmedValue()) ? s1.getValue().charAt(i) == '1' : s1.getValue().charAt(i) == '0';
 					//System.out.println("trovata e i="+i);
 					//System.out.println(s1.getValue().charAt(i) == '1');
 					//System.out.println(s1.getValue().charAt(i) == '0');
-					//System.out.println(result);
+					System.out.println(result);
 					
 				}
 					
@@ -116,11 +117,11 @@ public class PartialOrderSolutionGraph {
 				int index_n = getIndexByValue(neighbours.get(i));
 				if (!solutions.get(index_s).containSubSol(neighbours.get(i)) && !solutions.get(index_n).containSubSol(s.getValue()))
 					if (isBetterThan(s, new Solution(neighbours.get(i)))){
-						//System.out.println(s.getValue() + " e' meglio di " + neighbours.get(i));
+						System.out.println(s.getValue() + " e' meglio di " + neighbours.get(i));
 						solutions.get(index_s).addSubSol(new Solution(neighbours.get(i)));
 					}
 					else{
-						//System.out.println(neighbours.get(i) + " e' meglio di " + s.getValue());
+						System.out.println(neighbours.get(i) + " e' meglio di " + s.getValue());
 						solutions.get(index_n).addSubSol(s);
 						
 					}

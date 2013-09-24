@@ -60,16 +60,7 @@ public class ListUtils {
 	}
 
 	public static int fromBinToInt(String binary) {
-		int bin = Integer.parseInt(binary);
-		int dec = 0;
-
-		while (bin != 0) {
-			int digit = bin % 10;
-			dec = dec * 2 + digit;
-			bin = bin / 10;
-
-		}
-		return dec;
+		return Integer.parseInt(binary, 2);
 	}
 
 	public static List subtract(final List list1, final List list2) {

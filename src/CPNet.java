@@ -811,7 +811,7 @@ public class CPNet {
 		 * args[1] = nNodi
 		 * args[0] = strategy = None || Ac3 || fc || ls
 		 * */
-		
+			
 		boolean err = false;
 		
 		if(!args[0].equalsIgnoreCase("ac3") && !args[0].equalsIgnoreCase("fc") && !args[0].equalsIgnoreCase("none") && !args[0].equalsIgnoreCase("ls")){
@@ -973,8 +973,6 @@ public class CPNet {
 		
 		
 	}
-
-	
 
 	public void setP(PartialOrderSolutionGraph p) {
 		this.p = p;
