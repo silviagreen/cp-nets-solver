@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+
+
 public class Domain implements Iterable<Object> {
 	private static final long serialVersionUID = 1L;
 
