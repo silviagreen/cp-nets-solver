@@ -818,14 +818,11 @@ public class CPNet {
 			System.err.println("Inserire il nome di un algoritmo tra \n -none ( = backtraking) \n -fc ( = backtraking + forward checking) \n -ac3 ( = backtraking + propagazione di vincoli) + \n -ls ( = local search approach)");
 			err = true;
 		}
-		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("true")){
+		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")){
 			System.err.println("Inserisci \"true\" se vuoi cercare tutte le soluzioni ottime, \"false\" altrimenti");
 			err=true;
 		}
-		if(!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("true")){
-			System.err.println("Inserisci \"true\" se vuoi cercare tutte le soluzioni ottime, \"false\" altrimenti");
-			err=true;
-		}
+
 		if (!args[1].matches("-?\\d+(\\.\\d+)?")){
 			System.err.println("Inserire un numero valido di nodi");
 			err=true;
